@@ -1,12 +1,13 @@
 
 // Classe représentant l'extension
 class Scratchomised {
-    // Rien à définir pour l'instant!
-    constructor () {
+    constructor() {
+        const port = 5125;
+        this.socket = new WebSocket("ws://localhost:" + port);
     }
 
     // Donne des informations à Scratch sur l'extension
-    getInfo () {
+    getInfo() {
         return {
             // ID de l'extension (unique à chaque extension)
             id: "scratchomised",
@@ -51,6 +52,7 @@ class Scratchomised {
                     opcode: "getProperty",
                     blockType: "reporter",
                     text: "Property [PROPERTY] of [OBJECT]",
+                    disableMonitor: true,
                     arguments: {
                         PROPERTY: {
                             type: "string",
@@ -71,10 +73,10 @@ class Scratchomised {
                 // Il s'agit d'un menu statique : il ne peut pas être modifié selon des évènements extérieurs
                 properties: {
                     // Éléments du menu
-                    items : ["property", "foo", "bar"]
+                    items: "getProperties"
                 },
                 objects: {
-                    // Le menu "object" est un menu dynamique :
+                    // Le menu "objects" est un menu dynamique :
                     // Au lieu des éléments du menu, un nom de fonction est donné
                     // Cette fonction sera appellé chaque fois que le menu est ouvert
                     // Elle va retourner les éléments du menu
@@ -85,16 +87,50 @@ class Scratchomised {
     }
 
     defineProperty(args) {
+        try {
+            this.socket.send(JSON.stringify({
+                action: "define_property",
+                object: "Light",
+                property: "Powered",
+                value: "True"
+            }))
+        } catch (e) {
+            console.log("Error while sending data");
+        }
         console.log("Defining property : " + args);
     }
 
     getProperty(args) {
+        try {
+            this.socket.send(JSON.stringify({
+                action: "get_property",
+                object: "Light",
+                property: "Powered"
+            }))
+        } catch (e) {
+            console.log("Error while sending data")
+        }
         console.log("Getting property : " + args);
     }
 
     getObjects() {
+        try {
+            this.socket.send(JSON.stringify({
+                action: "get_objects"
+            }))
+        } catch (e) {
+            console.log("Error while sending data")
+        }
         console.log("Getting objects...");
         return ["Hello", "World!"];
+    }
+
+    getProperties() {
+        return ["A", "Proper", "Property!"]
+    }
+
+    _sendData(data) {
+
     }
 }
 

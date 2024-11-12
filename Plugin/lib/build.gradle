@@ -1,0 +1,14 @@
+plugins {
+    id "java-library"
+}
+
+dependencies {
+    implementation files("SweetHome3D-7.5.jar")
+}
+
+// Java 8 is the Java version SweetHome3D uses
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(8)
+    }
+}

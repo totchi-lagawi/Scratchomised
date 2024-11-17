@@ -1,0 +1,24 @@
+{
+    "tasks": [
+        {
+            "label": "jar",
+            "type": "shell",
+            "command": "cd ./Plugin && ./gradlew jar",
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "test",
+            "type": "shell",
+            "command": "cd ./Plugin/ && mv -f ./lib/build/libs/lib.jar $HOME/.eteks/sweethome3d/plugins && java -jar ./lib/SweetHome3D-7.5.jar",
+            "problemMatcher": [],
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            }
+        }
+    ]
+}

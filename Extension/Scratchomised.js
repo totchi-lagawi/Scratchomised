@@ -4,6 +4,7 @@ class Scratchomised {
     constructor() {
         this.port = 55125;
         this.host = "localhost"
+        this.protocol = "ws"
         this._reconnectSocket();
         this._objects = {}
 
@@ -71,13 +72,17 @@ class Scratchomised {
                 {
                     opcode: "connectToHost",
                     blockType: "command",
-                    text: "Connect to host [HOST] with port [PORT]",
+                    text: "Connect to host [HOST] with port [PORT] using protocol [PROTOCOL]",
                     arguments: {
                         HOST: {
                             type: "string"
                         },
                         PORT: {
                             type: "number"
+                        },
+                        PROTOCOL: {
+                            type: "string",
+                            menu: "connection_protocols"
                         }
                     }
                 }
@@ -102,6 +107,16 @@ class Scratchomised {
                     // Due to a strange behaviour of the TurboWarp VM, dynamic menus only works
                     // in unsandboxed extensions
                     items: "getObjects"
+                },
+                connection_protocols: {
+                    items: [{
+                        text: "WS",
+                        value: "ws"
+                    },
+                    {
+                        text: "WSS",
+                        value: "wss"
+                    }]
                 }
             }
         }
@@ -155,6 +170,7 @@ class Scratchomised {
     connectToHost(args) {
         this.host = args.HOST
         this.port = args.PORT
+        this.protocol = args.PROTOCOL
         this._reconnectSocket();
     }
 
@@ -172,7 +188,7 @@ class Scratchomised {
 
     // Reconnect the socket (in case it failed to connect, or the server disconnected)
     _reconnectSocket() {
-        this.socket = new WebSocket("ws://" + this.host + ":" + this.port);
+        this.socket = new WebSocket(this.protocol + "://" + this.host + ":" + this.port);
         this.socket.addEventListener("open", function () {
             this._send("get_objects")
         }.bind(this));

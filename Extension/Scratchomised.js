@@ -188,7 +188,7 @@ class Scratchomised {
 
     // Reconnect the socket (in case it failed to connect, or the server disconnected)
     _reconnectSocket() {
-        this.socket = new WebSocket(this.protocol + "://" + this.host + ":" + this.port);
+        this.socket = new WebSocket(this.protocol + "://" + this.host + ":" + this.port, "scratchomised");
         this.socket.addEventListener("open", function () {
             this._send("get_objects")
         }.bind(this));

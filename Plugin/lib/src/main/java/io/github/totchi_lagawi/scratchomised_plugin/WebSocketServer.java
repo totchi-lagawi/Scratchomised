@@ -1,28 +1,21 @@
 package io.github.totchi_lagawi.scratchomised_plugin;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
+// import java.io.BufferedWriter;
+
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.lang.reflect.Array;
+// import java.io.OutputStreamWriter;
 import java.net.BindException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
-import java.net.URI;
-import java.security.MessageDigest;
-import java.util.Base64;
 import java.util.Collection;
-import java.util.Scanner;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
+import java.util.HashMap;
+
+import io.github.totchi_lagawi.scratchomised_plugin.utils.http.HTTPMethod;
+import io.github.totchi_lagawi.scratchomised_plugin.utils.http.HTTPParser;
+import io.github.totchi_lagawi.scratchomised_plugin.utils.http.HTTPRequest;
 
 public class WebSocketServer implements Runnable {
     // Server's socket
@@ -48,60 +41,118 @@ public class WebSocketServer implements Runnable {
 
                 // Get the interfaces with input and output
                 BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
-                BufferedWriter out = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()));
+                // BufferedWriter out = new BufferedWriter(new
+                // OutputStreamWriter(client.getOutputStream()));
 
-                // TODO
-                // Refactor this to be cleaner
+                // Parse the request to an HTTPRequest
+                HTTPRequest request = HTTPParser.parse(in, true, true);
 
-                // Translate the input datas to a String
-                StringBuilder data_buffer = new StringBuilder();
-                String s;
-                while ((s = in.readLine()) != null) {
-                    data_buffer.append(s + "\n");
-                    if (s.isEmpty()) {
-                        break;
-                    }
+                // Checking wether the request is a valid request
+
+                boolean validity = true;
+
+                if (request.getMethod() != HTTPMethod.GET) {
+                    System.err.println(LanguageManager.getString("log_prefix", null)
+                            + "the request method should be GET, got " + request.getMethod() + " instead.");
+                    validity = false;
                 }
 
-                String data = data_buffer.toString();
-
-                // TODO
-                // Parse the request to an object, instead of just doing little hacks that "works"
-                // This would allow :
-                //         - Easier manipulation of the request
-                //         - Easier compliance with https://datatracker.ietf.org/doc/html/rfc6455.html
-
-                Matcher get = Pattern.compile("^GET").matcher(data);
-
-                // Check wether the request it a GET request
-                if (get.find()) {
-                    System.out.println("Request is a valid GET request");
-                    Matcher key = Pattern.compile("Sec-WebSocket-Key: (.*)").matcher(data);
-                    key.find();
-                    String response = ""
-                            + "HTTP/1.1 101 Switching Protocols\n"
-                            + "Connection: Upgrade\n"
-                            + "Upgrade: websocket\n"
-                            + "Sec-WebSocket-Accept: "
-                            + Base64.getEncoder().encodeToString(MessageDigest.getInstance("SHA-1")
-                                    .digest((key.group(1) + "258EAFA5-E914-47DA-95CA-C5AB0DC85B11").getBytes("UTF-8")));
-                    System.out.println("Response : \n" + response);
-                    out.write(response);
-                } else {
-                    // We assume that the connection is a WebSocket request
-                    System.out.println("Looks like a WebSocket request!");
-                    
+                if (!request.getLocation().equals("/")) {
+                    System.err.println(LanguageManager.getString("log_prefix", null)
+                            + "the location of the request should be /, got " + request.getLocation() + " instead.");
+                    validity = false;
                 }
+
+                if (request.getVersionDouble() < 1.1) {
+                    System.err.println(LanguageManager.getString("log_prefix", null)
+                            + "the HTTP version of the request shoud be at least 1.1, got version "
+                            + request.getVersionDouble());
+                    validity = false;
+                }
+
+                if (!request.getHeaders().containsKey("Host")) {
+                    System.err.println(LanguageManager.getString("log_prefix", null)
+                            + "the request should contain a Host field, but is not present.");
+                    validity = false;
+                }
+
+                if (!request.getHeaders().containsKey("Upgrade")) {
+                    System.err.println(LanguageManager.getString("log_prefix", null)
+                            + "the request should contain an Upgrade field, but it is not present.");
+                    validity = false;
+                }
+
+                if (!request.getHeaders().get("Upgrade").equals("websocket")) {
+                    System.err.println(LanguageManager.getString("log_prefix", null)
+                            + "the request should contain an Upgrade field containing the value websocket, but it contains the value "
+                            + request.getHeaders().get("Upgrade") + ".");
+                    validity = false;
+                }
+
+                if (!request.getHeaders().containsKey("Connection")) {
+                    System.err.println(LanguageManager.getString("log_prefix", null)
+                            + "the request should contain a Connection field, but it is not present");
+                    validity = false;
+                }
+
+                if (!request.getHeaders().get("Connection").equals("Upgrade")) {
+                    System.err.println(LanguageManager.getString("log_prefix", null)
+                            + "the request should contain a Connection field containing the value Upgrade, but it contains the value "
+                            + request.getHeaders().get("Connection") + ".");
+                    validity = false;
+                }
+
+                if (!request.getHeaders().containsKey("Sec-WebSocket-Key")) {
+                    System.err.println(LanguageManager.getString("log_prefix", null)
+                            + "the request should contain a Sec-WebSocket-Key field, but it is not present");
+                    validity = false;
+                }
+
+                if (!request.getHeaders().containsKey("Sec-WebSocket-Version")) {
+                    System.err.println(LanguageManager.getString("log_prefix", null)
+                            + "the request should contain a Sec-WebSocket-Version field, but it is not present");
+                    validity = false;
+                }
+
+                if (!request.getHeaders().get("Sec-WebSocket-Version").equals("13")) {
+                    System.err.println(LanguageManager.getString("log_prefix", null)
+                            + "the request should contain a Sec-WebSocket-Version field containing the value 13, but it contains the value "
+                            + request.getHeaders().get("Sec-WebSocket-Version") + ".");
+                    validity = false;
+                }
+
+                if (!request.getHeaders().containsKey("Sec-WebSocket-Protocol")) {
+                    System.err.println(LanguageManager.getString("log_prefix", null)
+                            + "the request should contain a Sec-WebSocket-Protocol field, but it is not present");
+                    validity = false;
+                }
+
+                if (!request.getHeaders().get("Sec-WebSocket-Protocol").equals("scratchomised")) {
+                    System.err.println(LanguageManager.getString("log_prefix", null)
+                            + "the request should contain a Sec-WebSocket-Protocol field containing the value scratchomised, but it contains the value "
+                            + request.getHeaders().get("Sec-WebSocket-Protocol") + ".");
+                    validity = false;
+                }
+
+                if (!validity) {
+                    throw new IllegalArgumentException();
+                }
+
             } catch (SocketException ex) {
                 // SocketException is thrown when socket.accept() is called on a closed socket
                 // which means that socket.close() was called on that socket
                 // which means that the server should be stopped
                 // We should then just return, to stop the thread
                 return;
+            } catch (IllegalArgumentException ex) {
+                // This is not idiomatic at all
+                // It means that the request is not a valid WebSocket request, hence we should
+                // do nothing, as it was treated above
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
         }
+
     }
 
     public void stop() {

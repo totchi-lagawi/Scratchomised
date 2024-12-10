@@ -7,8 +7,8 @@ public class ScratchomisedPlugin extends Plugin {
     @Override
     public PluginAction[] getActions() {
         return new PluginAction[] {
-            new PluginActionManageServer(),
-            new PluginActionExportDatas()
+                new PluginActionManageServer(),
+                new PluginActionExportDatas()
         };
     }
 }

@@ -32,7 +32,7 @@ public class PluginActionManageServer extends PluginAction {
             } catch (BindException ex) {
                 // There was a problem while binding the socket
                 JOptionPane.showMessageDialog(null,
-                        LanguageManager.getString("error.server.socket_bind", null) +  " (" + ex.getMessage() + ")",
+                        LanguageManager.getString("error.server.socket_bind", null) + " (" + ex.getMessage() + ")",
                         LanguageManager.getString("error.error", null), 0);
                 ex.printStackTrace();
                 return;

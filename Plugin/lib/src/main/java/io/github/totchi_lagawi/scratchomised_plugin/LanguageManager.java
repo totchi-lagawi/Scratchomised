@@ -34,6 +34,10 @@ public class LanguageManager {
             case "error.server.null_server": {
                 return "The server couldn't be instanciated, please rerun SweetHome3D.";
             }
+
+            case "log_prefix": {
+                return "[Scratchomised] - ";
+            }
         }
 
         return null;

@@ -8,7 +8,7 @@ import com.eteks.sweethome3d.plugin.PluginAction;
 
 public class PluginActionManageServer extends PluginAction {
     // Store the server socket
-    WebSocketServer server;
+    Server server;
     // Store the server thread
     Thread server_thread;
     // Port to bind the server on
@@ -28,7 +28,7 @@ public class PluginActionManageServer extends PluginAction {
         // Thanks null
         if (this.server == null) {
             try {
-                this.server = new WebSocketServer(55125);
+                this.server = new Server(55125);
             } catch (BindException ex) {
                 // There was a problem while binding the socket
                 JOptionPane.showMessageDialog(null,

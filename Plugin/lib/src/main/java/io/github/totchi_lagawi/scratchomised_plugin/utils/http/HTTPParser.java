@@ -25,7 +25,7 @@ public class HTTPParser {
      * @exception IOException   If there is some I/O error
      * @exception HTTPException If the given request is malformed (error code 400)
      */
-    public static HTTPRequest parse(BufferedReader reader, boolean acceptUnknownHTTPMethod,
+    public static HTTPRequest parseRequest(BufferedReader reader, boolean acceptUnknownHTTPMethod,
             boolean acceptUnknownHTTPVersion)
             throws IOException, HTTPException {
 
@@ -89,7 +89,15 @@ public class HTTPParser {
             header = reader.readLine();
         }
 
-        return new HTTPRequest(method, version, location, headers);
+        // Got an empty line, switching to body
+        String bodyLine = reader.readLine();
+        StringBuilder body = new StringBuilder();
+        while (bodyLine != null) {
+            body.append(header);
+            bodyLine = reader.readLine();
+        }
+
+        return new HTTPRequest(method, version, location, headers, body.toString());
 
     }
 }

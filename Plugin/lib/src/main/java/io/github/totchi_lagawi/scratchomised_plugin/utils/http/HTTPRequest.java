@@ -68,10 +68,15 @@ public class HTTPRequest {
 
     public String getRawRequest() {
         StringBuilder request = new StringBuilder();
+
         request.append(this._method + " " + this._location + " " + this.getVersionDouble() + "\n");
+
         for (Map.Entry<String, String> entry : this._headers.entrySet()) {
             request.append(entry.getKey() + ": " + entry.getValue() + "\n");
         }
+
+        request.append(this._body);
+
         return request.toString();
     }
 }

@@ -1,2 +1,2 @@
 # Exclude VSCode configuration
-.vscode
+.vscode/settings.json

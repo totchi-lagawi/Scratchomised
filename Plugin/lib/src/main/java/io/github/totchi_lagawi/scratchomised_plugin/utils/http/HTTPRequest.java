@@ -3,6 +3,9 @@ package io.github.totchi_lagawi.scratchomised_plugin.utils.http;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * A class holding an HTTP request
+ */
 public class HTTPRequest {
     private HTTPMethod _method;
     private HTTPVersion _version;
@@ -10,6 +13,15 @@ public class HTTPRequest {
     private HashMap<String, String> _headers;
     private String _body;
 
+    /**
+     * The constructor of <code>HTTPRequest</code>
+     * 
+     * @param method   the method of the request as a <code>HTTPMethod</code>
+     * @param version  the version of the request as a <code>HTTPVersion</code
+     * @param location  the location of the request as a <code>String</code>
+     * @param headers  the headers of the request as a <code>HashMap</code>
+     * @param body     the body of the request as a <code>String</code>
+     */
     public HTTPRequest(HTTPMethod method, HTTPVersion version, String location, HashMap<String, String> headers,
             String body) {
         this._method = method;
@@ -19,10 +31,20 @@ public class HTTPRequest {
         this._body = body;
     }
 
+    /**
+     * Get the method of the request as a <code>HTTPMethod</code>
+     * 
+     * @return the method of the request as a <code>HTTPMethod</code>
+     */
     public HTTPMethod getMethod() {
         return this._method;
     }
 
+    /**
+     * Get the version of the request as a <code>HTTPVersion</code
+     * 
+     * @return the version of the request as a <code>HTTPVersion</code>
+     */
     public HTTPVersion getVersion() {
         return this._version;
     }
@@ -54,18 +76,38 @@ public class HTTPRequest {
         }
     }
 
+    /**
+     * Get the location of the request as a <code>String</code>
+     * 
+     * @return the location of the request as a <code>String</code>
+     */
     public String getLocation() {
         return this._location;
     }
 
+    /**
+     * Get the headers of the request as a <code>HashMap</code>
+     * 
+     * @return the headers of the request as a <code>HashMap</code>
+     */
     public HashMap<String, String> getHeaders() {
         return this._headers;
     }
 
+    /**
+     * Get the body of the request as a <code>String</code>
+     * 
+     * @return the body of the request as a <code>String</code>
+     */
     public String getBody() {
         return this._body;
     }
 
+    /**
+     * Get the raw request as a <code>String</code>
+     * 
+     * @return the request as a <code>String</code>
+     */
     public String getRawRequest() {
         StringBuilder request = new StringBuilder();
 

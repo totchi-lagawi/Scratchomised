@@ -1,4 +1,4 @@
-package io.github.totchi_lagawi.scratchomised_plugin.utils.http;
+package io.github.totchi_lagawi.http_utils;
 
 /**
  * Enumeration of the different HTTP versions

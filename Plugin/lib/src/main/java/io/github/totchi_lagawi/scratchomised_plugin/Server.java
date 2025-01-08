@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.net.BindException;
 import java.net.Socket;
 
-import io.github.totchi_lagawi.scratchomised_plugin.utils.websocket.WebSocketServer;
+import io.github.totchi_lagawi.websocket_server.WebSocketServer;
 
 // Class representing the server
 public class Server extends WebSocketServer {

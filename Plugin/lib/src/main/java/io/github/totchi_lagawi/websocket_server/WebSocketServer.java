@@ -175,7 +175,15 @@ public abstract class WebSocketServer implements Runnable {
                     // TODO
                 }
             } catch (WebSocketException ex) {
+                // The server received an invalid WebSocket handshake
                 System.err.println(LanguageManager.getString("log.prefix", null) + ex.getMessage());
+                // Try to close the socket
+                try {
+                    this._connexion.getOutputStream().write(this._get400HTTPResponse().getRawResponse().getBytes());
+                    this._connexion.close();
+                } catch (IOException ex2) {
+                    ex2.printStackTrace();
+                }
             } catch (Exception ex) {
                 ex.printStackTrace();
                 return;
@@ -210,42 +218,30 @@ public abstract class WebSocketServer implements Runnable {
             this._HTTPVersion = request.getVersion();
 
             if (request.getMethod() != HTTPMethod.GET) {
-                this._connexion.getOutputStream().write(this._get400HTTPResponse().getRawResponse().getBytes());
-                this._connexion.close();
                 throw new WebSocketException(
                         "The request method should be GET, got " + request.getMethod() + " instead.");
             }
 
             if (!request.getLocation().equals("/")) {
-                this._connexion.getOutputStream().write(this._get400HTTPResponse().getRawResponse().getBytes());
-                this._connexion.close();
                 throw new WebSocketException(
                         "The location of the request should be /, got " + request.getLocation() + " instead.");
             }
 
             if (request.getVersionDouble() < 1.1) {
-                this._connexion.getOutputStream().write(this._get400HTTPResponse().getRawResponse().getBytes());
-                this._connexion.close();
                 throw new WebSocketException("The HTTP version of the request shoud be at least 1.1, got version "
                         + request.getVersionDouble() + ".");
             }
 
             if (!request.getHeaders().containsKey("Host")) {
-                this._connexion.getOutputStream().write(this._get400HTTPResponse().getRawResponse().getBytes());
-                this._connexion.close();
                 throw new WebSocketException("The request should contain a Host field, but is not present.");
             }
 
             if (!request.getHeaders().containsKey("Upgrade")) {
-                this._connexion.getOutputStream().write(this._get400HTTPResponse().getRawResponse().getBytes());
-                this._connexion.close();
                 throw new WebSocketException("The request should contain an Upgrade field, but it is not present.");
 
             } else {
 
                 if (!request.getHeaders().get("Upgrade").equals("websocket")) {
-                    this._connexion.getOutputStream().write(this._get400HTTPResponse().getRawResponse().getBytes());
-                    this._connexion.close();
                     throw new WebSocketException(
                             "The request should contain an Upgrade field containing the value websocket, but it contains the value \""
                                     + request.getHeaders().get("Upgrade") + "\".");
@@ -254,13 +250,9 @@ public abstract class WebSocketServer implements Runnable {
             }
 
             if (!request.getHeaders().containsKey("Connection")) {
-                this._connexion.getOutputStream().write(this._get400HTTPResponse().getRawResponse().getBytes());
-                this._connexion.close();
                 throw new WebSocketException("The request should contain a Connection field, but it is not present.");
             } else {
                 if (!Arrays.asList(request.getHeaders().get("Connection").split(", ")).contains("Upgrade")) {
-                    this._connexion.getOutputStream().write(this._get400HTTPResponse().getRawResponse().getBytes());
-                    this._connexion.close();
                     throw new WebSocketException(
                             "The request should contain a Connection field containing the value Upgrade, but it contains the value \""
                                     + request.getHeaders().get("Connection") + "\".");
@@ -269,23 +261,17 @@ public abstract class WebSocketServer implements Runnable {
             }
 
             if (!request.getHeaders().containsKey("Sec-WebSocket-Key")) {
-                this._connexion.getOutputStream().write(this._get400HTTPResponse().getRawResponse().getBytes());
-                this._connexion.close();
                 throw new WebSocketException(
                         "The request should contain a Sec-WebSocket-Key field, but it is not present.");
             }
 
             if (!request.getHeaders().containsKey("Sec-WebSocket-Version")) {
-                this._connexion.getOutputStream().write(this._get400HTTPResponse().getRawResponse().getBytes());
-                this._connexion.close();
                 throw new WebSocketException(
                         "The request should contain a Sec-WebSocket-Version field, but it is not present.");
 
             } else {
 
                 if (!request.getHeaders().get("Sec-WebSocket-Version").equals("13")) {
-                    this._connexion.getOutputStream().write(this._get400HTTPResponse().getRawResponse().getBytes());
-                    this._connexion.close();
                     throw new WebSocketException(
                             "The request should contain a Sec-WebSocket-Version field containing the value 13, but it contains the value "
                                     + request.getHeaders().get("Sec-WebSocket-Version") + ".");
@@ -294,8 +280,6 @@ public abstract class WebSocketServer implements Runnable {
             }
 
             if (!request.getHeaders().containsKey("Sec-WebSocket-Protocol")) {
-                this._connexion.getOutputStream().write(this._get400HTTPResponse().getRawResponse().getBytes());
-                this._connexion.close();
                 throw new WebSocketException(
                         "The request should contain a Sec-WebSocket-Protocol field, but it is not present.");
 
@@ -304,8 +288,6 @@ public abstract class WebSocketServer implements Runnable {
                 // Not conformant to the standard, but no important since the server will only
                 // handle Scratchomised client connexions
                 if (!request.getHeaders().get("Sec-WebSocket-Protocol").equals("scratchomised")) {
-                    this._connexion.getOutputStream().write(this._get400HTTPResponse().getRawResponse().getBytes());
-                    this._connexion.close();
                     throw new WebSocketException(
                             "The request should contain a Sec-WebSocket-Protocol field containing the value scratchomised, but it contains the value \""
                                     + request.getHeaders().get("Sec-WebSocket-Protocol") + "\".");

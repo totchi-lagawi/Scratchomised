@@ -174,9 +174,11 @@ public abstract class WebSocketServer implements Runnable {
                 while (true) {
                     // TODO
                 }
+
             } catch (WebSocketException ex) {
                 // The server received an invalid WebSocket handshake
                 System.err.println(LanguageManager.getString("log.prefix", null) + ex.getMessage());
+
                 // Try to close the socket
                 try {
                     this._connexion.getOutputStream().write(this._get400HTTPResponse().getRawResponse().getBytes());
@@ -184,8 +186,17 @@ public abstract class WebSocketServer implements Runnable {
                 } catch (IOException ex2) {
                     ex2.printStackTrace();
                 }
+
+                return;
             } catch (Exception ex) {
                 ex.printStackTrace();
+
+                try {
+                    this._connexion.close();
+                } catch (IOException ex2) {
+                    ex2.printStackTrace();
+                }
+
                 return;
             }
         }

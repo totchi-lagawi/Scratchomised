@@ -51,6 +51,7 @@ public abstract class WebSocketServer implements Runnable {
      * Run the server
      */
     public void run() {
+        // Won't a FixedThreadPool limit the number of connexions?
         this._service = Executors.newFixedThreadPool(5);
         while (true) {
             try {
@@ -169,6 +170,10 @@ public abstract class WebSocketServer implements Runnable {
             // Perfom the handshake
             try {
                 this._handshake();
+
+                while (true) {
+                    // TODO
+                }
             } catch (IllegalArgumentException ex) {
                 // Non-idiomatic trick to show every error of the request
                 // IllegalArgumentException means that the request is not a valid WS handshake
@@ -191,7 +196,8 @@ public abstract class WebSocketServer implements Runnable {
          * @throws IOException              for whatever other I/O exception
          */
         private void _handshake()
-                throws HTTPException, IOException, IllegalArgumentException, NoSuchAlgorithmException {
+                throws HTTPException, IOException, IllegalArgumentException, NoSuchAlgorithmException,
+                WebSocketException {
             BufferedReader reader = new BufferedReader(new InputStreamReader(this._connexion.getInputStream()));
             StringBuilder raw_request = new StringBuilder();
 
@@ -206,109 +212,115 @@ public abstract class WebSocketServer implements Runnable {
 
             this._HTTPVersion = request.getVersion();
 
-            // Check wether the request is a valid request
-            boolean validity = true;
-
             if (request.getMethod() != HTTPMethod.GET) {
-                System.err.println(LanguageManager.getString("log_prefix", null)
+                this._connexion.getOutputStream().write(this._get400HTTPResponse().getRawResponse().getBytes());
+                this._connexion.close();
+                throw new WebSocketException(LanguageManager.getString("log_prefix", null)
                         + "the request method should be GET, got " + request.getMethod() + " instead.");
-                validity = false;
             }
 
             if (!request.getLocation().equals("/")) {
-                System.err.println(LanguageManager.getString("log_prefix", null)
+                this._connexion.getOutputStream().write(this._get400HTTPResponse().getRawResponse().getBytes());
+                this._connexion.close();
+                throw new WebSocketException(LanguageManager.getString("log_prefix", null)
                         + "the location of the request should be /, got " + request.getLocation() + " instead.");
-                validity = false;
             }
 
             if (request.getVersionDouble() < 1.1) {
-                System.err.println(LanguageManager.getString("log_prefix", null)
+                this._connexion.getOutputStream().write(this._get400HTTPResponse().getRawResponse().getBytes());
+                this._connexion.close();
+                throw new WebSocketException(LanguageManager.getString("log_prefix", null)
                         + "the HTTP version of the request shoud be at least 1.1, got version "
                         + request.getVersionDouble() + ".");
-                validity = false;
             }
 
             if (!request.getHeaders().containsKey("Host")) {
-                System.err.println(LanguageManager.getString("log_prefix", null)
+                this._connexion.getOutputStream().write(this._get400HTTPResponse().getRawResponse().getBytes());
+                this._connexion.close();
+                throw new WebSocketException(LanguageManager.getString("log_prefix", null)
                         + "the request should contain a Host field, but is not present.");
-                validity = false;
             }
 
             if (!request.getHeaders().containsKey("Upgrade")) {
-
-                System.err.println(LanguageManager.getString("log_prefix", null)
+                this._connexion.getOutputStream().write(this._get400HTTPResponse().getRawResponse().getBytes());
+                this._connexion.close();
+                throw new WebSocketException(LanguageManager.getString("log_prefix", null)
                         + "the request should contain an Upgrade field, but it is not present.");
-                validity = false;
 
             } else {
 
                 if (!request.getHeaders().get("Upgrade").equals("websocket")) {
-                    System.err.println(LanguageManager.getString("log_prefix", null)
+                    this._connexion.getOutputStream().write(this._get400HTTPResponse().getRawResponse().getBytes());
+                    this._connexion.close();
+                    throw new WebSocketException(LanguageManager.getString("log_prefix", null)
                             + "the request should contain an Upgrade field containing the value websocket, but it contains the value \""
+
                             + request.getHeaders().get("Upgrade") + "\".");
-                    validity = false;
+
                 }
             }
 
             if (!request.getHeaders().containsKey("Connection")) {
-
-                System.err.println(LanguageManager.getString("log_prefix", null)
+                this._connexion.getOutputStream().write(this._get400HTTPResponse().getRawResponse().getBytes());
+                this._connexion.close();
+                throw new WebSocketException(LanguageManager.getString("log_prefix", null)
                         + "the request should contain a Connection field, but it is not present.");
-                validity = false;
             } else {
-
                 if (!Arrays.asList(request.getHeaders().get("Connection").split(", ")).contains("Upgrade")) {
-                    System.err.println(LanguageManager.getString("log_prefix", null)
+                    this._connexion.getOutputStream().write(this._get400HTTPResponse().getRawResponse().getBytes());
+                    this._connexion.close();
+                    throw new WebSocketException(LanguageManager.getString("log_prefix", null)
                             + "the request should contain a Connection field containing the value Upgrade, but it contains the value \""
+
                             + request.getHeaders().get("Connection") + "\".");
-                    validity = false;
+
                 }
             }
 
             if (!request.getHeaders().containsKey("Sec-WebSocket-Key")) {
-                System.err.println(LanguageManager.getString("log_prefix", null)
+                this._connexion.getOutputStream().write(this._get400HTTPResponse().getRawResponse().getBytes());
+                this._connexion.close();
+                throw new WebSocketException(LanguageManager.getString("log_prefix", null)
                         + "the request should contain a Sec-WebSocket-Key field, but it is not present.");
-                validity = false;
             }
 
             if (!request.getHeaders().containsKey("Sec-WebSocket-Version")) {
-
-                System.err.println(LanguageManager.getString("log_prefix", null)
+                this._connexion.getOutputStream().write(this._get400HTTPResponse().getRawResponse().getBytes());
+                this._connexion.close();
+                throw new WebSocketException(LanguageManager.getString("log_prefix", null)
                         + "the request should contain a Sec-WebSocket-Version field, but it is not present.");
-                validity = false;
 
             } else {
 
                 if (!request.getHeaders().get("Sec-WebSocket-Version").equals("13")) {
-                    System.err.println(LanguageManager.getString("log_prefix", null)
+                    this._connexion.getOutputStream().write(this._get400HTTPResponse().getRawResponse().getBytes());
+                    this._connexion.close();
+                    throw new WebSocketException(LanguageManager.getString("log_prefix", null)
                             + "the request should contain a Sec-WebSocket-Version field containing the value 13, but it contains the value "
+
                             + request.getHeaders().get("Sec-WebSocket-Version") + ".");
-                    validity = false;
+
                 }
             }
 
             if (!request.getHeaders().containsKey("Sec-WebSocket-Protocol")) {
-
-                System.err.println(LanguageManager.getString("log_prefix", null)
+                this._connexion.getOutputStream().write(this._get400HTTPResponse().getRawResponse().getBytes());
+                this._connexion.close();
+                throw new WebSocketException(LanguageManager.getString("log_prefix", null)
                         + "the request should contain a Sec-WebSocket-Protocol field, but it is not present.");
-                validity = false;
 
             } else {
 
+                // Not conformant to the standard, but no important since the server will only
+                // handle Scratchomised client connexions
                 if (!request.getHeaders().get("Sec-WebSocket-Protocol").equals("scratchomised")) {
-                    System.err.println(LanguageManager.getString("log_prefix", null)
+                    this._connexion.getOutputStream().write(this._get400HTTPResponse().getRawResponse().getBytes());
+                    this._connexion.close();
+                    throw new WebSocketException(LanguageManager.getString("log_prefix", null)
                             + "the request should contain a Sec-WebSocket-Protocol field containing the value scratchomised, but it contains the value \""
                             + request.getHeaders().get("Sec-WebSocket-Protocol") + "\".");
-                    validity = false;
-                }
-            }
 
-            if (!validity) {
-                System.err.println(
-                        LanguageManager.getString("log_prefix", null) + "recieved an invalid request, aborting.");
-                this._connexion.getOutputStream().write(this._get400HTTPResponse().getRawResponse().getBytes());
-                this._connexion.close();
-                throw new IllegalArgumentException();
+                }
             }
 
             // We can now assume that the received request is valid

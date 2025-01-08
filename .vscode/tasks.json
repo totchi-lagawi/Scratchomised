@@ -13,7 +13,7 @@
         {
             "label": "test",
             "type": "shell",
-            "command": "cd ./Plugin/ && cp -f ./lib/build/libs/lib.jar $HOME/.eteks/sweethome3d/plugins && java -jar ./lib/SweetHome3D-7.5.jar",
+            "command": "mkdir -p $HOME/.eteks/sweethome3d/plugins && cd ./Plugin/ && cp -f ./lib/build/libs/lib.jar $HOME/.eteks/sweethome3d/plugins && java -jar ./lib/SweetHome3D-7.5.jar",
             "problemMatcher": [],
             "group": {
                 "kind": "test",

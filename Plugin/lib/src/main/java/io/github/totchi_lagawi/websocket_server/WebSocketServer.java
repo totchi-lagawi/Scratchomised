@@ -7,13 +7,13 @@ import java.net.BindException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 
 import io.github.totchi_lagawi.http_utils.HTTPException;
 import io.github.totchi_lagawi.http_utils.HTTPMethod;
@@ -282,6 +282,9 @@ public abstract class WebSocketServer implements Runnable {
 
             } else {
 
+                // TODO
+                // Implement https://datatracker.ietf.org/doc/html/rfc6455.html#section-4.4, to
+                // make future clients compatible
                 if (!request.getHeaders().get("Sec-WebSocket-Version").equals("13")) {
                     throw new WebSocketException(
                             "The request should contain a Sec-WebSocket-Version field containing the value 13, but it contains the value "

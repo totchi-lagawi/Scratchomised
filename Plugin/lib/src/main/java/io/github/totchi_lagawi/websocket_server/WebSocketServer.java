@@ -93,25 +93,6 @@ public abstract class WebSocketServer implements Runnable {
     }
 
     /**
-     * Check if the server is running.
-     * 
-     * @return <code>true</code if yes, otherwise <code>false</code>
-     */
-    public boolean isRunning() {
-        // Prevent NullPointerException
-        // Thanks null
-        if (this._socket == null) {
-            return false;
-        }
-
-        if (this._socket.isClosed()) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    /**
      * Called when a connexion starts.
      * 
      * @param connexion the connexion that just started

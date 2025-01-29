@@ -1,17 +1,20 @@
 package io.github.totchi_lagawi.websocket_server;
 
-/**
- * Enumeration of all WebSocket frame opcodes
- */
 public enum WebSocketFrameOpcode {
+    // 0x0
     CONTINUATION_FRAME,
+    // 0x1
     TEXT_FRAME,
+    // 0x2
     BINARY_FRAME,
-    // %x3-7 are reserved for further non-control frames
+    // 0x3 -> 0x7
     UNKNOWN_NON_CONTROL_FRAME,
-    CONNECTION_CLOSE_FRAME,
+    // 0x8
+    CLOSE_FRAME,
+    // 0x9
     PING_FRAME,
+    // 0xA
     PONG_FRAME,
-    // %xB-F are reserved for further control frames
+    // 0xB -> 0xF
     UNKNOWN_CONTROL_FRAME
 }

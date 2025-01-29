@@ -1,6 +1,6 @@
 package io.github.totchi_lagawi.websocket_server;
 
-public enum WebSocketFrameOpcode {
+public enum FrameOpcodes {
     // 0x0
     CONTINUATION_FRAME,
     // 0x1

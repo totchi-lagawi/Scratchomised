@@ -1,6 +1,6 @@
 package io.github.totchi_lagawi.websocket_server;
 
-public class WebSocketFrame {
+public class Frame {
     // Is the frame the latest of the message?
     private boolean _is_final;
     // MUST be zero unless an extension of the protocol was negociated
@@ -8,7 +8,7 @@ public class WebSocketFrame {
     // them? If not, add getter
     private boolean rsv1, rsv2, rsv3;
     // The opcode
-    private WebSocketFrameOpcode _opcode;
+    private FrameOpcodes _opcode;
     // Wether the current frame is masked
     private boolean _masked;
     // The masking key, empty if the frame isn't masked, or 4-byte (32 bits) long if
@@ -31,7 +31,7 @@ public class WebSocketFrame {
      *                    masked
      * @param payload     the payload
      */
-    public WebSocketFrame(boolean is_final, WebSocketFrameOpcode opcode, boolean is_masked, byte[] masking_key,
+    public Frame(boolean is_final, FrameOpcodes opcode, boolean is_masked, byte[] masking_key,
             byte[] payload) {
 
     }
@@ -41,7 +41,7 @@ public class WebSocketFrame {
      * 
      * @param frame bytes containing the frame
      */
-    public WebSocketFrame(byte[] frame) {
+    public Frame(byte[] frame) {
 
     }
 
@@ -68,7 +68,7 @@ public class WebSocketFrame {
      * 
      * @return a <code>WebSocketFrameOpcode</code> containing the opcode
      */
-    public WebSocketFrameOpcode getOpcode() {
+    public FrameOpcodes getOpcode() {
         return this._opcode;
     }
 
@@ -77,7 +77,7 @@ public class WebSocketFrame {
      * 
      * @param opcode the opcode to set to
      */
-    public void setOpcode(WebSocketFrameOpcode opcode) {
+    public void setOpcode(FrameOpcodes opcode) {
         this._opcode = opcode;
     }
 

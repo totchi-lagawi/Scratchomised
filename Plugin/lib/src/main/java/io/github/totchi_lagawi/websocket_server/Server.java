@@ -3,7 +3,7 @@ package io.github.totchi_lagawi.websocket_server;
 /**
  * Abstract implementation of a WebSocket server
  */
-public abstract class WebSocketServer implements Runnable {
+public abstract class Server implements Runnable {
     /**
      * Called when a connection just opened
      * 
@@ -47,6 +47,5 @@ public abstract class WebSocketServer implements Runnable {
      * The main server loop
      */
     public void run() {
-
     }
 }

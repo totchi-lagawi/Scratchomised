@@ -28,6 +28,10 @@ public class ServerConnection {
     // The close reason
     private String _close_reason;
 
+    public byte[] recv() {
+        return null;
+    }
+
     public void send(String message) {
 
     }

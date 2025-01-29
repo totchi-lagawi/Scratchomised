@@ -1,27 +1,33 @@
 package io.github.totchi_lagawi.scratchomised_plugin;
 
-import java.io.IOException;
-import java.net.BindException;
-import java.net.Socket;
-
 import io.github.totchi_lagawi.websocket_server.Server;
+import io.github.totchi_lagawi.websocket_server.ServerConnection;
 
 // Class representing the server
 public class ScratchomisedServer extends Server {
 
-    protected void onStart(Socket connexion) {
+    @Override
+    protected void onOpen(ServerConnection connection) {
 
     }
 
-    protected void onStop(Socket connexion) {
+    @Override
+    protected void onMessage(ServerConnection connection, String message) {
 
     }
 
-    protected void onError(Socket connexion) {
+    @Override
+    protected void onMessage(ServerConnection connection, byte[] message) {
 
     }
 
-    protected void onMessage(Socket connexion, String message) {
+    @Override
+    protected void onClose(ServerConnection connection) {
+
+    }
+
+    @Override
+    protected void onError(ServerConnection connection, Exception exception) {
 
     }
 

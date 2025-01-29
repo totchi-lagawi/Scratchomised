@@ -37,34 +37,68 @@ public class ServerConnection {
 
     }
 
+    /**
+     * Wait for the next message, and return it
+     * 
+     * @return the message received
+     */
     public byte[] recv() {
         return null;
     }
 
+    /**
+     * Send text message to the client
+     * 
+     * @param message the text to be sent
+     */
     public void send(String message) {
 
     }
 
+    /**
+     * Send bytes message to the client
+     * 
+     * @param message the bytes to be sent
+     */
     public void send(byte[] message) {
 
     }
 
+    /**
+     * Close the connection to the client
+     */
     public void close() {
 
     }
 
+    /**
+     * Wait for the connection to the client to be closed
+     */
     public void wait_closed() {
 
     }
 
+    /**
+     * Send a ping request to the client
+     */
     public void ping() {
 
     }
 
+    /**
+     * Send a ping response to the client, useful in an unidirectional stream as a
+     * keepalive
+     */
     public void pong() {
 
     }
 
+    /**
+     * Send an HTTP response to the client
+     * 
+     * @param status the status code of the response
+     * @param body   the body of the response
+     */
     public void respond(HTTPStatusCode status, String body) {
 
     }

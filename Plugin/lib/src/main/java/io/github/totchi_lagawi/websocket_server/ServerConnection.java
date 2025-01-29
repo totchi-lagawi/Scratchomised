@@ -10,7 +10,7 @@ import java.net.SocketAddress;
  */
 public class ServerConnection {
     // The parent server, to call methods like onMessage() or onError()
-    private WebSocketServer _server;
+    private Server _server;
     // The socket holding the connection
     private Socket _socket;
     // The local address of the connection
@@ -22,7 +22,7 @@ public class ServerConnection {
     // value
     private float _latency;
     // The current state of the connection
-    private WebSocketConnectionState _state;
+    private ConnectionState _state;
     // The subprotocol as requested by the client during the handshake
     private String _subprotocol;
     // The close code

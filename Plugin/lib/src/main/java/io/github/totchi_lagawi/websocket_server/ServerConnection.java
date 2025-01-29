@@ -28,6 +28,15 @@ public class ServerConnection {
     // The close reason
     private String _close_reason;
 
+    /**
+     * Instanciate <code>ServerConnection</code>
+     * 
+     * @param socket the socket to the client
+     */
+    public ServerConnection(Socket socket) {
+
+    }
+
     public byte[] recv() {
         return null;
     }

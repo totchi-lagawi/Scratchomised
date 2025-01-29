@@ -9,7 +9,7 @@ public abstract class Server implements Runnable {
      * 
      * @param connection the connection which opened
      */
-    abstract void onOpen(ServerConnection connection);
+    abstract protected void onOpen(ServerConnection connection);
 
     /**
      * Called when a connection receives a text message
@@ -17,7 +17,7 @@ public abstract class Server implements Runnable {
      * @param connection the connection which received the message
      * @param message    the message received
      */
-    abstract void onMessage(ServerConnection connection, String message);
+    abstract protected void onMessage(ServerConnection connection, String message);
 
     /**
      * Called when a connection receives a binary message
@@ -25,7 +25,7 @@ public abstract class Server implements Runnable {
      * @param connection the connection which received the message
      * @param message    the message received
      */
-    abstract void onMessage(ServerConnection connection, byte[] message);
+    abstract protected void onMessage(ServerConnection connection, byte[] message);
 
     /**
      * Called when a connection closes
@@ -33,7 +33,7 @@ public abstract class Server implements Runnable {
      * @param connection the connections which just closed
      */
     // TODO maybe add the close code and reason?
-    abstract void onClose(ServerConnection connection);
+    abstract protected void onClose(ServerConnection connection);
 
     /**
      * Called when a connection encounters an error
@@ -41,7 +41,7 @@ public abstract class Server implements Runnable {
      * @param connection the connection which encountered the error
      * @param exception  the exception the connection encountered
      */
-    abstract void onError(ServerConnection connection, Exception exception);
+    abstract protected void onError(ServerConnection connection, Exception exception);
 
     /**
      * The main server loop

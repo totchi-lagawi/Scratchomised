@@ -9,8 +9,6 @@ import java.net.SocketAddress;
  * Class representing a connection to a client
  */
 public class ServerConnection {
-    // The parent server, to call methods like onMessage() or onError()
-    private Server _server;
     // The socket holding the connection
     private Socket _socket;
     // The local address of the connection

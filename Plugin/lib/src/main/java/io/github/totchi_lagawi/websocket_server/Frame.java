@@ -8,7 +8,7 @@ public class Frame {
     // them? If not, add getter
     private boolean rsv1, rsv2, rsv3;
     // The opcode
-    private FrameOpcodes _opcode;
+    private FrameOpcode _opcode;
     // Wether the current frame is masked
     private boolean _masked;
     // The masking key, empty if the frame isn't masked, or 4-byte (32 bits) long if
@@ -31,7 +31,7 @@ public class Frame {
      *                    masked
      * @param payload     the payload
      */
-    public Frame(boolean is_final, FrameOpcodes opcode, boolean is_masked, byte[] masking_key,
+    public Frame(boolean is_final, FrameOpcode opcode, boolean is_masked, byte[] masking_key,
             byte[] payload) {
 
     }
@@ -68,7 +68,7 @@ public class Frame {
      * 
      * @return a <code>WebSocketFrameOpcode</code> containing the opcode
      */
-    public FrameOpcodes getOpcode() {
+    public FrameOpcode getOpcode() {
         return this._opcode;
     }
 
@@ -77,7 +77,7 @@ public class Frame {
      * 
      * @param opcode the opcode to set to
      */
-    public void setOpcode(FrameOpcodes opcode) {
+    public void setOpcode(FrameOpcode opcode) {
         this._opcode = opcode;
     }
 

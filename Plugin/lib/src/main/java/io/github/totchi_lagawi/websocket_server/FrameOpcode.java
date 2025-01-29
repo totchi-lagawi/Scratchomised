@@ -3,7 +3,7 @@ package io.github.totchi_lagawi.websocket_server;
 /**
  * Enumeration of the different possibles opcode for a WebSocket frame
  */
-public enum FrameOpcodes {
+public enum FrameOpcode {
     // 0x0
     CONTINUATION_FRAME,
     // 0x1

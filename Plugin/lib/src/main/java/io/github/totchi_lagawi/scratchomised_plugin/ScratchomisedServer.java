@@ -4,14 +4,10 @@ import java.io.IOException;
 import java.net.BindException;
 import java.net.Socket;
 
-import io.github.totchi_lagawi.websocket_server.WebSocketServer;
+import io.github.totchi_lagawi.websocket_server.Server;
 
 // Class representing the server
-public class Server extends WebSocketServer {
-
-    public Server(int port) throws BindException, IOException {
-        super(port);
-    }
+public class ScratchomisedServer extends Server {
 
     protected void onStart(Socket connexion) {
 

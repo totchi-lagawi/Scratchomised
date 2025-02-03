@@ -14,43 +14,43 @@ public abstract class Server implements Runnable {
     }
 
     /**
-     * Called when a connection just opened
+     * Called when a connexion just opened
      * 
-     * @param connection the connection which opened
+     * @param connexion the connexion which opened
      */
-    abstract protected void onOpen(ServerConnection connection);
+    abstract protected void onOpen(ServerConnexion connexion);
 
     /**
-     * Called when a connection receives a text message
+     * Called when a connexion receives a text message
      * 
-     * @param connection the connection which received the message
-     * @param message    the message received
+     * @param connexion the connexion which received the message
+     * @param message   the message received
      */
-    abstract protected void onMessage(ServerConnection connection, String message);
+    abstract protected void onMessage(ServerConnexion connexion, String message);
 
     /**
-     * Called when a connection receives a binary message
+     * Called when a connexion receives a binary message
      * 
-     * @param connection the connection which received the message
-     * @param message    the message received
+     * @param connexion the connexion which received the message
+     * @param message   the message received
      */
-    abstract protected void onMessage(ServerConnection connection, byte[] message);
+    abstract protected void onMessage(ServerConnexion connexion, byte[] message);
 
     /**
-     * Called when a connection closes
+     * Called when a connexion closes
      * 
-     * @param connection the connections which just closed
+     * @param connexion the connexions which just closed
      */
     // TODO maybe add the close code and reason?
-    abstract protected void onClose(ServerConnection connection);
+    abstract protected void onClose(ServerConnexion connexion);
 
     /**
-     * Called when a connection encounters an error
+     * Called when a connexion encounters an error
      * 
-     * @param connection the connection which encountered the error
-     * @param exception  the exception the connection encountered
+     * @param connexion the connexion which encountered the error
+     * @param exception the exception the connexion encountered
      */
-    abstract protected void onError(ServerConnection connection, Exception exception);
+    abstract protected void onError(ServerConnexion connexion, Exception exception);
 
     /**
      * The main server loop

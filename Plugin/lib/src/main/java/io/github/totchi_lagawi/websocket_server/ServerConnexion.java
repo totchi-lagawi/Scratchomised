@@ -6,21 +6,21 @@ import java.net.Socket;
 import java.net.SocketAddress;
 
 /**
- * Class representing a connection to a client
+ * Class representing a connexion to a client
  */
-public class ServerConnection {
-    // The socket holding the connection
+public class ServerConnexion {
+    // The socket holding the connexion
     private Socket _socket;
-    // The local address of the connection
+    // The local address of the connexion
     private SocketAddress _localAddress;
-    // The remote address of the connection
+    // The remote address of the connexion
     private SocketAddress _remoteAddress;
-    // The latency of the connection
+    // The latency of the connexion
     // 0 before any measurement, hopefully getLatency() does it before returning the
     // value
     private float _latency;
-    // The current state of the connection
-    private ConnectionState _state;
+    // The current state of the connexion
+    private ConnexionState _state;
     // The subprotocol as requested by the client during the handshake
     private String _subprotocol;
     // The close code
@@ -29,34 +29,34 @@ public class ServerConnection {
     private String _close_reason;
 
     /**
-     * Get the local address of the connection
+     * Get the local address of the connexion
      * 
-     * @return the local address of the connection
+     * @return the local address of the connexion
      */
     public SocketAddress getLocalAddress() {
         return this._localAddress;
     }
 
     /**
-     * Get the remote address of the connection
+     * Get the remote address of the connexion
      * 
-     * @return the remote address of the connection
+     * @return the remote address of the connexion
      */
     public SocketAddress getRemoteAddress() {
         return this._remoteAddress;
     }
 
     /**
-     * Get the connection state of the connection
+     * Get the connexion state of the connexion
      * 
-     * @return the state of the connection
+     * @return the state of the connexion
      */
-    public ConnectionState getConnectionState() {
+    public ConnexionState getconnexionState() {
         return this._state;
     }
 
     /**
-     * Get the subprotocol of the connection, negociated during the handshake
+     * Get the subprotocol of the connexion, negociated during the handshake
      * 
      * @return the subprotocol
      */
@@ -65,7 +65,7 @@ public class ServerConnection {
     }
 
     /**
-     * Get the close code of the connection
+     * Get the close code of the connexion
      * 
      * @return the close code
      */
@@ -74,20 +74,20 @@ public class ServerConnection {
     }
 
     /**
-     * Get the close reason of the connection
+     * Get the close reason of the connexion
      * 
-     * @return the close reason of the connection
+     * @return the close reason of the connexion
      */
     public String getCloseReason() {
         return this._close_reason;
     }
 
     /**
-     * Instanciate <code>ServerConnection</code>
+     * Instanciate <code>Serverconnexion</code>
      * 
      * @param socket the socket to the client
      */
-    public ServerConnection(Socket socket) {
+    public ServerConnexion(Socket socket) {
 
     }
 
@@ -119,14 +119,14 @@ public class ServerConnection {
     }
 
     /**
-     * Close the connection to the client
+     * Close the connexion to the client
      */
     public void close() {
 
     }
 
     /**
-     * Wait for the connection to the client to be closed
+     * Wait for the connexion to the client to be closed
      */
     public void wait_closed() {
 

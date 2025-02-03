@@ -2,23 +2,23 @@ package io.github.totchi_lagawi.websocket_server;
 
 import java.net.Socket;
 
-public class ConnectionHandler implements Runnable {
+public class ConnexionHandler implements Runnable {
     // The parent server, to call methods like onOpen() or onClose()
     private Server _server;
-    // The connection to the client
-    private ServerConnection _connection;
+    // The connexion to the client
+    private ServerConnexion _connexion;
 
     /**
-     * Instanciate the connection handler
+     * Instanciate the connexion handler
      * 
      * @param socket the socket to the client
      */
-    public ConnectionHandler(Socket socket) {
-        this._connection = new ServerConnection(socket);
+    public ConnexionHandler(Socket socket) {
+        this._connexion = new ServerConnexion(socket);
     }
 
     /**
-     * Run the connection handler
+     * Run the connexion handler
      */
     public void run() {
         // TODO
@@ -27,9 +27,9 @@ public class ConnectionHandler implements Runnable {
     }
 
     /**
-     * Stop the connection
+     * Stop the connexion
      */
     public void stop() {
-        this._connection.close();
+        this._connexion.close();
     }
 }

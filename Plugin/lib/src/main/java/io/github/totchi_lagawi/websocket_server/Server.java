@@ -5,6 +5,15 @@ package io.github.totchi_lagawi.websocket_server;
  */
 public abstract class Server implements Runnable {
     /**
+     * Contructor of the Server class
+     * 
+     * @param port the port to run the server on
+     */
+    public Server(int port) {
+
+    }
+
+    /**
      * Called when a connection just opened
      * 
      * @param connection the connection which opened
@@ -47,5 +56,11 @@ public abstract class Server implements Runnable {
      * The main server loop
      */
     public void run() {
+    }
+
+    /**
+     * Stop the server
+     */
+    public void stop() {
     }
 }

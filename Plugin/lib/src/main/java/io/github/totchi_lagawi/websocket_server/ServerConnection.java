@@ -29,6 +29,60 @@ public class ServerConnection {
     private String _close_reason;
 
     /**
+     * Get the local address of the connection
+     * 
+     * @return the local address of the connection
+     */
+    public SocketAddress getLocalAddress() {
+        return this._localAddress;
+    }
+
+    /**
+     * Get the remote address of the connection
+     * 
+     * @return the remote address of the connection
+     */
+    public SocketAddress getRemoteAddress() {
+        return this._remoteAddress;
+    }
+
+    /**
+     * Get the connection state of the connection
+     * 
+     * @return the state of the connection
+     */
+    public ConnectionState getConnectionState() {
+        return this._state;
+    }
+
+    /**
+     * Get the subprotocol of the connection, negociated during the handshake
+     * 
+     * @return the subprotocol
+     */
+    public String getSubprotocol() {
+        return this._subprotocol;
+    }
+
+    /**
+     * Get the close code of the connection
+     * 
+     * @return the close code
+     */
+    public int getCloseCode() {
+        return this._close_code;
+    }
+
+    /**
+     * Get the close reason of the connection
+     * 
+     * @return the close reason of the connection
+     */
+    public String getCloseReason() {
+        return this._close_reason;
+    }
+
+    /**
      * Instanciate <code>ServerConnection</code>
      * 
      * @param socket the socket to the client
@@ -91,6 +145,26 @@ public class ServerConnection {
      */
     public void pong() {
 
+    }
+
+    /**
+     * Calculate the latency, then return the calculated latency
+     * 
+     * @return the calculated latency
+     */
+    public float getLatency() {
+        return this.getLatency(0);
+    }
+
+    /**
+     * Calculate the latency, aborting on the given timeout
+     * 
+     * @param timeout the maximum time to wait for the pong of the client
+     * 
+     * @return the calculated latency
+     */
+    public float getLatency(int timeout) {
+        return -1;
     }
 
     /**

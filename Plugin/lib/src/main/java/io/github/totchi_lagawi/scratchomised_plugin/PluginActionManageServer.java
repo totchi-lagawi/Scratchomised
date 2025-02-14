@@ -1,9 +1,5 @@
 package io.github.totchi_lagawi.scratchomised_plugin;
 
-import java.net.BindException;
-
-import javax.swing.JOptionPane;
-
 import com.eteks.sweethome3d.plugin.PluginAction;
 
 public class PluginActionManageServer extends PluginAction {

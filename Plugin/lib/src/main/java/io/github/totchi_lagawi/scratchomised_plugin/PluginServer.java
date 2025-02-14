@@ -1,7 +1,7 @@
 package io.github.totchi_lagawi.scratchomised_plugin;
 
 import io.github.totchi_lagawi.websocket_server.Server;
-import io.github.totchi_lagawi.websocket_server.ServerConnection;
+import io.github.totchi_lagawi.websocket_server.ServerConnexion;
 
 public class PluginServer extends Server {
 
@@ -11,30 +11,31 @@ public class PluginServer extends Server {
     }
 
     @Override
-    protected void onOpen(ServerConnection connection) {
-        System.out.println(LanguageManager.getString("log_prefix", null) + " client connected : " + connection.);
+    protected void onOpen(ServerConnexion connexion) {
+        System.out.println(
+                LanguageManager.getString("log_prefix", null) + " client connected : " + connexion.getRemoteAddress());
     }
 
     @Override
-    protected void onMessage(ServerConnection connection, String message) {
+    protected void onMessage(ServerConnexion connexion, String message) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'onMessage'");
     }
 
     @Override
-    protected void onMessage(ServerConnection connection, byte[] message) {
+    protected void onMessage(ServerConnexion connexion, byte[] message) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'onMessage'");
     }
 
     @Override
-    protected void onClose(ServerConnection connection) {
+    protected void onClose(ServerConnexion connexion) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'onClose'");
     }
 
     @Override
-    protected void onError(ServerConnection connection, Exception exception) {
+    protected void onError(ServerConnexion connexion, Exception exception) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'onError'");
     }

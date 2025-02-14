@@ -1,10 +1,13 @@
 package io.github.totchi_lagawi.scratchomised_plugin;
 
 public class LanguageManager {
-    public static String getString(String id, String lang) {
-        if (lang == null) {
-            lang = getLang();
-        }
+    private String _lang;
+
+    public String getString(String id) {
+        return getString(id, this._lang);
+    }
+
+    public String getString(String id, String lang) {
 
         switch (id) {
             case "plugin.menu": {
@@ -43,8 +46,11 @@ public class LanguageManager {
         return null;
     }
 
-    public static String getLang() {
-        // TODO
-        return null;
+    public void setLang(String lang) {
+        this._lang = lang;
+    }
+
+    public String getLang() {
+        return this._lang;
     }
 }

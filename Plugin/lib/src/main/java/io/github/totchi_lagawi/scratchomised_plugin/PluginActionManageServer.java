@@ -7,6 +7,7 @@ import javax.swing.JOptionPane;
 import com.eteks.sweethome3d.plugin.PluginAction;
 
 public class PluginActionManageServer extends PluginAction {
+    private LanguageManager _languageManager;
     // Store the server socket
     PluginServer server;
     // Store the server thread
@@ -14,10 +15,11 @@ public class PluginActionManageServer extends PluginAction {
     // Port to bind the server on
     int port = 55125;
 
-    public PluginActionManageServer() {
+    public PluginActionManageServer(LanguageManager languageManager) {
+        this._languageManager = languageManager;
         // When instanciated, define the menu, name and enabled state of this action
-        putPropertyValue(Property.NAME, LanguageManager.getString("server.name.start", null));
-        putPropertyValue(Property.MENU, LanguageManager.getString("plugin.menu", null));
+        putPropertyValue(Property.NAME, this._languageManager.getString("server.name.start"));
+        putPropertyValue(Property.MENU, this._languageManager.getString("plugin.menu"));
         putPropertyValue(Property.ENABLED, true);
 
     }
@@ -53,10 +55,10 @@ public class PluginActionManageServer extends PluginAction {
             this.server_thread = null;
             // And we should reinstance the server since the socket can't be reopened
             this.server = null;
-            putPropertyValue(Property.NAME, LanguageManager.getString("server.name.start", null));
+            putPropertyValue(Property.NAME, this._languageManager.getString("server.name.start"));
         } else {
             this.server_thread.start();
-            putPropertyValue(Property.NAME, LanguageManager.getString("server.name.stop", null));
+            putPropertyValue(Property.NAME, this._languageManager.getString("server.name.stop"));
         }
     }
 }

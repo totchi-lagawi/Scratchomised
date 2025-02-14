@@ -5,9 +5,12 @@ import javax.swing.JOptionPane;
 import com.eteks.sweethome3d.plugin.PluginAction;
 
 public class PluginActionExportDatas extends PluginAction {
-    public PluginActionExportDatas() {
-        putPropertyValue(Property.NAME, LanguageManager.getString("export.name", null));
-        putPropertyValue(Property.MENU, LanguageManager.getString("plugin.menu", null));
+    private LanguageManager _languageManager;
+
+    public PluginActionExportDatas(LanguageManager languageManager) {
+        this._languageManager = languageManager;
+        putPropertyValue(Property.NAME, this._languageManager.getString("export.name", null));
+        putPropertyValue(Property.MENU, this._languageManager.getString("plugin.menu", null));
         putPropertyValue(Property.ENABLED, true);
     }
 

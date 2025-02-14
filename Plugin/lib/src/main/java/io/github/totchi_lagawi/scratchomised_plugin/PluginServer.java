@@ -4,6 +4,7 @@ import io.github.totchi_lagawi.websocket_server.Server;
 import io.github.totchi_lagawi.websocket_server.ServerConnexion;
 
 public class PluginServer extends Server {
+    private LanguageManager _languageManager;
 
     public PluginServer(int port) {
         super(port);
@@ -13,7 +14,8 @@ public class PluginServer extends Server {
     @Override
     protected void onOpen(ServerConnexion connexion) {
         System.out.println(
-                LanguageManager.getString("log_prefix", null) + " client connected : " + connexion.getRemoteAddress());
+                this._languageManager.getString("log_prefix", null) + " client connected : "
+                        + connexion.getRemoteAddress());
     }
 
     @Override

@@ -56,6 +56,7 @@ public abstract class Server implements Runnable {
      * The main server loop
      */
     public void run() {
+        return;
     }
 
     /**

@@ -41,11 +41,9 @@ public class LanguageManager implements PropertyChangeListener {
     }
 
     public void loadTranslation(String lang, boolean replace) {
-        System.out.println("Loading translation : " + lang);
         // Check if it is really useful to load the translation
         if (replace = false) {
             if (this._translations.containsKey(lang)) {
-                System.out.println("Translation already present, skipping");
                 return;
             }
         }
@@ -55,14 +53,12 @@ public class LanguageManager implements PropertyChangeListener {
 
         // Ensure that the translation file actually exists
         if (file_stream == null) {
-            System.out.println("Huh? Translation file not found");
             throw new NoSuchElementException("The translation file for " + lang + " was not found");
         }
 
         Yaml yaml = new Yaml();
         Translation translation = (Translation) yaml.loadAs(file_stream, Translation.class);
         this._translations.put(lang, translation);
-        System.out.println("Now we have the following translations : " + this._translations.keySet());
     }
 
     public void propertyChange(PropertyChangeEvent event) {

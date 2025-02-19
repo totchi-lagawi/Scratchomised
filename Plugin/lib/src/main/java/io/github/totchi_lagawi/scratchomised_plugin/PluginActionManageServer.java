@@ -1,8 +1,11 @@
 package io.github.totchi_lagawi.scratchomised_plugin;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
 import com.eteks.sweethome3d.plugin.PluginAction;
 
-public class PluginActionManageServer extends PluginAction {
+public class PluginActionManageServer extends PluginAction implements PropertyChangeListener {
     private LanguageManager _languageManager;
     // Store the server socket
     PluginServer server;
@@ -14,8 +17,8 @@ public class PluginActionManageServer extends PluginAction {
     public PluginActionManageServer(LanguageManager languageManager) {
         this._languageManager = languageManager;
         // When instanciated, define the menu, name and enabled state of this action
-        putPropertyValue(Property.NAME, this._languageManager.getString("server.name.start"));
-        putPropertyValue(Property.MENU, this._languageManager.getString("plugin.menu"));
+        putPropertyValue(Property.NAME, this._languageManager.getString("menus.server.start"));
+        putPropertyValue(Property.MENU, this._languageManager.getString("name"));
         putPropertyValue(Property.ENABLED, true);
 
     }
@@ -51,10 +54,22 @@ public class PluginActionManageServer extends PluginAction {
             this.server_thread = null;
             // And we should reinstance the server since the socket can't be reopened
             this.server = null;
-            putPropertyValue(Property.NAME, this._languageManager.getString("server.name.start"));
+            putPropertyValue(Property.NAME, this._languageManager.getString("menus.server.start"));
         } else {
             this.server_thread.start();
-            putPropertyValue(Property.NAME, this._languageManager.getString("server.name.stop"));
+            putPropertyValue(Property.NAME, this._languageManager.getString("menus.server.stop"));
+        }
+    }
+
+    public void propertyChange(PropertyChangeEvent event) {
+        if (event.getPropertyName() == "LANGUAGE") {
+            putPropertyValue(Property.MENU, this._languageManager.getString("name"));
+
+            if (this.server_thread.isAlive()) {
+                putPropertyValue(Property.NAME, this._languageManager.getString("menus.server.stop"));
+            } else {
+                putPropertyValue(Property.NAME, this._languageManager.getString("menus.server.start"));
+            }
         }
     }
 }

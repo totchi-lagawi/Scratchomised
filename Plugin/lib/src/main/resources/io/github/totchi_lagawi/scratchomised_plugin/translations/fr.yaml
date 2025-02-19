@@ -1,0 +1,19 @@
+# The name of the plugin, as shown in the menu
+name: "Scratchomised"
+
+# The different menus
+menus:
+  server:
+    start: "Démarrer le server"
+    stop: "Arrêter le serveur"
+  export: "Exporter..."
+
+# The different errors
+errors:
+  error: "Erreur"
+  server:
+    socket_binding: "Erreur lors de la création du socket"
+    null_server: "Le serveur n'a pas pu être créé"
+
+# The logging prefix
+log_prefix: "[Scratchomised] - "

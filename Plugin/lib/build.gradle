@@ -1,9 +1,18 @@
 plugins {
     id "java-library"
+    id "com.gradleup.shadow" version '9.0.0-beta8'
+}
+
+repositories {
+    mavenCentral()
 }
 
 dependencies {
-    compileOnly files("SweetHome3D-7.5.jar")
+    implementation 'org.yaml:snakeyaml:2.3'
+    // Shadow means it will be included at runtime, to prevent shadowJAR to include it
+    // And trust me you don't want that to happen
+    // Look at the size of SweetHome3D's JAR
+    shadow files("SweetHome3D-7.5.jar")
 }
 
 // Java 8 is the Java version SweetHome3D uses
@@ -11,4 +20,9 @@ java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(8)
     }
+}
+
+// Minimize the resulting JAR, a bit
+tasks.named('shadowJar', com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
+  minimize()
 }

@@ -3,7 +3,7 @@
         {
             "label": "jar",
             "type": "shell",
-            "command": "cd ./Plugin && ./gradlew jar",
+            "command": "cd ./Plugin && ./gradlew shadowJar",
             "problemMatcher": [],
             "group": {
                 "kind": "build",

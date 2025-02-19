@@ -3,6 +3,10 @@ package io.github.totchi_lagawi.scratchomised_plugin;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
 
+/**
+ * A class holding a translation, used to type-safely parse the YAML
+ * representation of a translation
+ */
 public class Translation {
     public String name;
     public String log_prefix;

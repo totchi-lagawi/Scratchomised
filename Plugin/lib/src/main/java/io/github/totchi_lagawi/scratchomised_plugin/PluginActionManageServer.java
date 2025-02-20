@@ -56,7 +56,6 @@ public class PluginActionManageServer extends PluginAction implements PropertyCh
         try {
             this._server_thread = new Thread(this._server);
             this._server_thread.setName("Scratchomised - WebSocket server");
-            this._server_thread.setDaemon(true);
             this._server_thread.setUncaughtExceptionHandler(this);
         } catch (Exception ex) {
             ex.printStackTrace();

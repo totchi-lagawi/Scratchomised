@@ -13,14 +13,16 @@ public class ConnexionHandler implements Runnable {
      * 
      * @param socket the socket to the client
      */
-    public ConnexionHandler(Socket socket) {
+    public ConnexionHandler(Socket socket, Server server) {
         this._connexion = new ServerConnexion(socket);
+        this._server = server;
     }
 
     /**
      * Run the connexion handler
      */
     public void run() {
+        this._server.onOpen(_connexion);
         // TODO
         // Implement hanshaking, then receiving messages and passing them to the
         // appropriate methods

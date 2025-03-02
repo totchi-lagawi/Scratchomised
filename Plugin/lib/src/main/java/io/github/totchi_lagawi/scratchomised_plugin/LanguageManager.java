@@ -22,6 +22,10 @@ public class LanguageManager implements PropertyChangeListener {
     }
 
     public String getString(String id, String lang) {
+        if (lang == null) {
+            throw new IllegalArgumentException(
+                    "Lang can't be null. Please use getString(String id) for automatic language selection");
+        }
         this.loadTranslation(lang, false);
         try {
             return this._translations.get(lang).getTranslation(id);

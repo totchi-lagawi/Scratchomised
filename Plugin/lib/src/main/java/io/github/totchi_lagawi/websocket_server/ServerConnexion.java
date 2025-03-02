@@ -63,7 +63,7 @@ public class ServerConnexion {
      * 
      * @return the state of the connexion
      */
-    public ConnexionState getcCnnexionState() {
+    public ConnexionState getConnexionState() {
         return this._state;
     }
 

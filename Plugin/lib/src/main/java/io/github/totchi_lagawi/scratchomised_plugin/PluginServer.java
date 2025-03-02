@@ -1,20 +1,22 @@
 package io.github.totchi_lagawi.scratchomised_plugin;
 
+import java.io.IOException;
+
 import io.github.totchi_lagawi.websocket_server.Server;
 import io.github.totchi_lagawi.websocket_server.ServerConnexion;
 
 public class PluginServer extends Server {
     private LanguageManager _languageManager;
 
-    public PluginServer(int port) {
+    public PluginServer(int port, LanguageManager languageManager) throws IOException {
         super(port);
-        // TODO Auto-generated constructor stub
+        this._languageManager = languageManager;
     }
 
     @Override
     protected void onOpen(ServerConnexion connexion) {
         System.out.println(
-                this._languageManager.getString("log_prefix", null) + " client connected : "
+                this._languageManager.getString("log_prefix") + "client connected : "
                         + connexion.getRemoteAddress());
     }
 

@@ -46,7 +46,7 @@ public class Translation {
                 object = object.getClass().getDeclaredField(field).get(object);
             }
             return (String) object;
-        } catch (NoSuchFieldException ex) {
+        } catch (NoSuchFieldException | ClassCastException ex) {
             throw new NoSuchElementException("The requested translation (" + id + ") was not found");
         }
     }

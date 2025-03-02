@@ -47,7 +47,7 @@ public class PluginActionManageServer extends PluginAction implements PropertyCh
 
         // Start by instanciating the server
         try {
-            this._server = new PluginServer(55125);
+            this._server = new PluginServer(55125, this._languageManager);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -72,8 +72,8 @@ public class PluginActionManageServer extends PluginAction implements PropertyCh
         // - The name is changed as if the server was stopped (which is the case)
         // - But now this.startServer() finishes executing and change the name as if the
         // server was running, which is not the case
-        // Sometimes, this.stopServer() finishes executing before this.stopServer(), and
-        // so the name is correct. But sometimes not, that's why the name should be
+        // Sometimes, this.startServer() finishes executing before this.stopServer(),
+        // and so the name is correct. But sometimes not, that's why the name should be
         // changed before it ever could be changed again
         putPropertyValue(Property.NAME, this._languageManager.getString("menus.server.stop"));
 

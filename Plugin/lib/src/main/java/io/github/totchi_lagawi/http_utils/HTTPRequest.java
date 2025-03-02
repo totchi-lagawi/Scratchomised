@@ -2,6 +2,8 @@ package io.github.totchi_lagawi.http_utils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
@@ -35,29 +37,20 @@ public class HTTPRequest {
     }
 
     /**
-     * Parse a <code>BufferedReader</code> to an HTTP request
+     * Parse an InputStreamReader to an HTTPRequest
      * 
-     * @param reader                   the BufferedReader to parse from
-     * @param acceptUnknownHTTPMethod  wether the function should abort if an
-     *                                 unknown HTTP method is found. Useful for
-     *                                 future compatibility, if the request method
-     *                                 doesn't matter
-     * @param acceptUnknownHTTPVersion wether the function should abort if an
-     *                                 unknown HTTP version is found. Useful for
-     *                                 future compatibility, if the version doesn't
-     *                                 matter.
+     * @param input                    the InputStreamReader containing the request
+     * @param acceptUnknownHTTPMethod  whether to allow not yet known HTTP methods
+     * @param acceptUnknownHTTPVersion whether to allow not yet known HTTP versions
      * 
-     * @exception IOException   If there is some I/O error
-     * @exception HTTPException If the given request is malformed (thrown with error
-     *                          code 400)
+     * @throws IOException
+     * @throws HTTPException if the given HTTP request if malformed
      */
-    // TODO Replace the use of BufferedReader to String, allowing the end of the
-    // stream to be detected
-    public static HTTPRequest parse(String request, boolean acceptUnknownHTTPMethod,
-            boolean acceptUnknownHTTPVersion)
+    // TODO change from just throwing HTTPException with error code 400 to giving
+    // what's wrong
+    public HTTPRequest(InputStreamReader input, boolean acceptUnknownHTTPMethod, boolean acceptUnknownHTTPVersion)
             throws IOException, HTTPException {
-
-        BufferedReader reader = new BufferedReader(new StringReader(request));
+        BufferedReader reader = new BufferedReader(input);
 
         String requestLine = reader.readLine();
 
@@ -127,8 +120,11 @@ public class HTTPRequest {
             bodyLine = reader.readLine();
         }
 
-        return new HTTPRequest(method, version, location, headers, body.toString());
-
+        this._method = method;
+        this._version = version;
+        this._location = location;
+        this._headers = headers;
+        this._body = body.toString();
     }
 
     /**

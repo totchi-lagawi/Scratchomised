@@ -1,6 +1,6 @@
 package io.github.totchi_lagawi.websocket_server;
 
-import io.github.totchi_lagawi.http_utils.HTTPStatusCode;
+import io.github.totchi_lagawi.http_utils.HTTPResponse;
 
 import java.net.Socket;
 import java.net.SocketAddress;
@@ -172,10 +172,9 @@ public class ServerConnexion {
     /**
      * Send an HTTP response to the client
      * 
-     * @param status the status code of the response
-     * @param body   the body of the response
+     * @param response the response to send
      */
-    public void respond(HTTPStatusCode status, String body) {
+    public void respond(HTTPResponse response) {
 
     }
 }

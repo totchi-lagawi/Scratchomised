@@ -174,7 +174,7 @@ public class ServerConnexion {
      * 
      * @param response the response to send
      */
-    public void respond(HTTPResponse response) {
+    public void sendHTTPResponse(HTTPResponse response) {
 
     }
 }

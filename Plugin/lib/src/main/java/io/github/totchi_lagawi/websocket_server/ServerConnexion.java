@@ -29,6 +29,17 @@ public class ServerConnexion {
     private String _close_reason;
 
     /**
+     * Instanciate <code>Serverconnexion</code>
+     * 
+     * @param socket the socket to the client
+     */
+    public ServerConnexion(Socket socket) {
+        this._socket = socket;
+        this._localAddress = socket.getLocalSocketAddress();
+        this._remoteAddress = socket.getRemoteSocketAddress();
+    }
+
+    /**
      * Get the local address of the connexion
      * 
      * @return the local address of the connexion
@@ -51,7 +62,7 @@ public class ServerConnexion {
      * 
      * @return the state of the connexion
      */
-    public ConnexionState getconnexionState() {
+    public ConnexionState getcCnnexionState() {
         return this._state;
     }
 
@@ -80,15 +91,6 @@ public class ServerConnexion {
      */
     public String getCloseReason() {
         return this._close_reason;
-    }
-
-    /**
-     * Instanciate <code>Serverconnexion</code>
-     * 
-     * @param socket the socket to the client
-     */
-    public ServerConnexion(Socket socket) {
-
     }
 
     /**

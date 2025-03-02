@@ -2,6 +2,7 @@ package io.github.totchi_lagawi.websocket_server;
 
 import io.github.totchi_lagawi.http_utils.HTTPResponse;
 
+import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketAddress;
 
@@ -174,7 +175,7 @@ public class ServerConnexion {
      * 
      * @param response the response to send
      */
-    public void sendHTTPResponse(HTTPResponse response) {
-
+    public void sendHTTPResponse(HTTPResponse response) throws IOException {
+        this._socket.getOutputStream().write(response.getRawResponse().getBytes());
     }
 }

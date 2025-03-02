@@ -1,21 +1,27 @@
 package io.github.totchi_lagawi.websocket_server;
 
-import java.lang.reflect.UndeclaredThrowableException;
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.SocketException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Abstract implementation of a WebSocket server
  */
 public abstract class Server implements Runnable {
-    // TEMPORARY
-    private boolean _is_alive = true;
+    // The port on which to run the server
+    private int _port;
+    // The server socket
+    private ServerSocket _socket;
 
     /**
      * Contructor of the Server class
      * 
      * @param port the port to run the server on
      */
-    public Server(int port) {
-
+    public Server(int port) throws IOException {
+        this._port = port;
     }
 
     /**
@@ -61,16 +67,32 @@ public abstract class Server implements Runnable {
      * The main server loop
      */
     public void run() {
-        // while (this._is_alive) {
-        // }
-        // return;
-        throw new IllegalStateException("Hello world!");
+        ExecutorService executor = Executors.newCachedThreadPool();
+        try {
+            this._socket = new ServerSocket(this._port);
+            while (true) {
+                executor.submit(new ConnexionHandler(this._socket.accept(), this));
+            }
+        } catch (SocketException ex) {
+            // SocketException means the socket was closed, by this.stop()
+            // We should just return
+            executor.shutdown();
+            return;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     /**
      * Stop the server
      */
     public void stop() {
-        this._is_alive = false;
+        try {
+            while (!this._socket.isClosed()) {
+                this._socket.close();
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
 }

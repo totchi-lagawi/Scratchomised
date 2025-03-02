@@ -16,4 +16,4 @@ errors:
     null_server: "The server couldn't be created"
 
 # The logging prefix
-log_prefix: "[Scratchomised] - "
+log_prefix: "[Scratchomised] "

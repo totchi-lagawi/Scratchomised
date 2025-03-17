@@ -17,6 +17,11 @@ public class HTTPException extends Exception {
         this.status_code = status_code;
     }
 
+    public HTTPException(int status_code, String message) {
+        super(message);
+        this.status_code = status_code;
+    }
+
     /**
      * Get the HTTP error code of the exception
      * 

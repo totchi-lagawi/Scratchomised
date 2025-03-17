@@ -1,6 +1,8 @@
 package io.github.totchi_lagawi.http_utils;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -45,10 +47,82 @@ public class HTTPResponse {
      * @throws HTTPException If the request is malformed (thrown with error code
      *                       400)
      */
-    public HTTPResponse parse(String response, boolean acceptUnknownHTTPVersion, boolean acceptUnknownHTTPStatus)
+    public HTTPResponse(InputStreamReader input, boolean acceptUnknownHTTPVersion, boolean acceptUnknownHTTPStatus)
             throws IOException, HTTPException {
-        // TODO
-        return new HTTPResponse(null, 0, null, null);
+        BufferedReader reader = new BufferedReader(input);
+
+        String headerLine = reader.readLine();
+
+        if (headerLine == null || headerLine.length() == 0 || Character.isWhitespace(headerLine.charAt(0))) {
+            throw new HTTPException(400, "The given response didn't contain a valid HTTP header line");
+        }
+
+        String[] headerInfos = headerLine.split("\\s");
+
+        if (headerInfos.length < 2 || headerInfos[0].indexOf("HTTP/") != 0 || headerInfos[1].length() != 3) {
+            throw new HTTPException(400, "The given response didn't contain a valid HTTP header line");
+        }
+
+        HTTPVersion version;
+        switch (headerInfos[0]) {
+            case "HTTP/0.9":
+                version = HTTPVersion.ZERO_POINT_NINE;
+                break;
+            case "HTTP/1":
+                version = HTTPVersion.ONE_POINT_ZERO;
+                break;
+            case "HTTP/1.1":
+                version = HTTPVersion.ONE_POINT_ONE;
+                break;
+            case "HTTP/2":
+                version = HTTPVersion.TWO;
+                break;
+            case "HTTP/3":
+                version = HTTPVersion.THREE;
+            default:
+                if (acceptUnknownHTTPVersion) {
+                    version = HTTPVersion.UNKNOWN;
+                    break;
+                } else {
+                    throw new HTTPException(400, "The given response contained an unknown HTTP version");
+                }
+        }
+
+        HTTPStatusCode statusCode;
+        try {
+            statusCode = HTTPStatusCode.getByValue(Integer.parseInt(headerInfos[1]));
+        } catch (NumberFormatException ex) {
+            throw new HTTPException(400, "The given response contained a malformed HTTP status code");
+        }
+
+        if (statusCode.name() == "UNKOWN" && !acceptUnknownHTTPStatus) {
+            throw new HTTPException(400, "The given response contained an unkown HTTP status code");
+        }
+
+        HashMap<String, String> headers = new HashMap<>();
+
+        String header = reader.readLine();
+        while (header != null && !header.isEmpty()) {
+            int index = header.indexOf(":");
+            if (index == -1) {
+                throw new HTTPException(400, "The given response contained a malformed header field");
+            }
+            headers.put(header.substring(0, index), header.substring(index + 2));
+            header = reader.readLine();
+        }
+
+        String bodyLine = reader.readLine();
+        StringBuilder body = new StringBuilder();
+        while (bodyLine != null) {
+            body.append(bodyLine);
+            bodyLine = reader.readLine();
+        }
+
+        this._version = version;
+        // this._status =
+        this._headers = headers;
+        this._body = body.toString();
+
     }
 
     /**

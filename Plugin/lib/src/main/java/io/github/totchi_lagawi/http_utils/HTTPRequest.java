@@ -46,22 +46,20 @@ public class HTTPRequest {
      * @throws IOException
      * @throws HTTPException if the given HTTP request if malformed
      */
-    // TODO change from just throwing HTTPException with error code 400 to giving
-    // what's wrong
     public HTTPRequest(InputStreamReader input, boolean acceptUnknownHTTPMethod, boolean acceptUnknownHTTPVersion)
             throws IOException, HTTPException {
         BufferedReader reader = new BufferedReader(input);
 
-        String requestLine = reader.readLine();
+        String headerLine = reader.readLine();
 
-        if (requestLine == null || requestLine.length() == 0 || Character.isWhitespace(requestLine.charAt(0))) {
-            throw new HTTPException(400);
+        if (headerLine == null || headerLine.length() == 0 || Character.isWhitespace(headerLine.charAt(0))) {
+            throw new HTTPException(400, "The given request didn't contain a valid HTTP header line");
         }
 
-        String[] requestInfos = requestLine.split("\\s");
+        String[] requestInfos = headerLine.split("\\s");
 
         if (requestInfos.length != 3 || requestInfos[1].indexOf("/") != 0 || requestInfos[2].indexOf("HTTP/") != 0) {
-            throw new HTTPException(400);
+            throw new HTTPException(400, "Then given request didn't contain a valid HTTP header line");
         }
 
         HTTPMethod method;
@@ -75,7 +73,7 @@ public class HTTPRequest {
                     method = HTTPMethod.UNKNOWN;
                     break;
                 } else {
-                    throw new HTTPException(400);
+                    throw new HTTPException(400, "The given request contained an unknown HTTP method");
                 }
         }
 
@@ -83,6 +81,9 @@ public class HTTPRequest {
 
         HTTPVersion version;
         switch (requestInfos[2]) {
+            case "HTTP/0.9":
+                version = HTTPVersion.ZERO_POINT_NINE;
+                break;
             case "HTTP/1":
                 version = HTTPVersion.ONE_POINT_ZERO;
                 break;
@@ -91,12 +92,16 @@ public class HTTPRequest {
                 break;
             case "HTTP/2":
                 version = HTTPVersion.TWO;
+                break;
+            case "HTTP/3":
+                version = HTTPVersion.THREE;
+                break;
             default:
                 if (acceptUnknownHTTPVersion) {
                     version = HTTPVersion.UNKNOWN;
                     break;
                 } else {
-                    throw new HTTPException(400);
+                    throw new HTTPException(400, "The given request contained an unknown HTTP version");
                 }
         }
 
@@ -106,7 +111,7 @@ public class HTTPRequest {
         while (header != null && !header.isEmpty()) {
             int index = header.indexOf(":");
             if (index == -1) {
-                throw new HTTPException(400);
+                throw new HTTPException(400, "The given request contained a malformed header field");
             }
             headers.put(header.substring(0, index), header.substring(index + 2));
             header = reader.readLine();

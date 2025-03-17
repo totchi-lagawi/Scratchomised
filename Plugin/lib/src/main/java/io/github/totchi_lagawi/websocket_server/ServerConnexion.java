@@ -1,8 +1,12 @@
 package io.github.totchi_lagawi.websocket_server;
 
+import io.github.totchi_lagawi.http_utils.HTTPException;
+import io.github.totchi_lagawi.http_utils.HTTPRequest;
 import io.github.totchi_lagawi.http_utils.HTTPResponse;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.Socket;
 import java.net.SocketAddress;
 
@@ -21,7 +25,7 @@ public class ServerConnexion {
     // value
     private float _latency;
     // The current state of the connexion
-    private ConnexionState _state;
+    private ConnexionState _state = ConnexionState.CLOSED;
     // The subprotocol as requested by the client during the handshake
     private String _subprotocol;
     // The close code
@@ -95,15 +99,6 @@ public class ServerConnexion {
     }
 
     /**
-     * Wait for the next message, and return it
-     * 
-     * @return the message received
-     */
-    public byte[] recv() {
-        return null;
-    }
-
-    /**
      * Send text message to the client
      * 
      * @param message the text to be sent
@@ -122,16 +117,34 @@ public class ServerConnexion {
     }
 
     /**
-     * Close the connexion to the client
+     * Send a frame to the client
+     * 
+     * @param frame the frame to be sent
      */
-    public void close() {
+    public void send(Frame frame) {
 
     }
 
+    public byte[] getNextMessage() {
+        return this.getNextMessage(-1);
+    }
+
+    public byte[] getNextMessage(int timeout) {
+        return null;
+    }
+
+    public WebSocketResponse<?> getNextRequest() {
+        return this.getNextRequest(-1);
+    }
+
+    public WebSocketResponse<?> getNextRequest(int timeout) {
+        return null;
+    }
+
     /**
-     * Wait for the connexion to the client to be closed
+     * Close the connexion to the client
      */
-    public void wait_closed() {
+    public void close() {
 
     }
 
@@ -143,8 +156,7 @@ public class ServerConnexion {
     }
 
     /**
-     * Send a ping response to the client, useful in an unidirectional stream as a
-     * keepalive
+     * Send a ping response to the client
      */
     public void pong() {
 
@@ -156,7 +168,7 @@ public class ServerConnexion {
      * @return the calculated latency
      */
     public float getLatency() {
-        return this.getLatency(0);
+        return this.getLatency(-1);
     }
 
     /**
@@ -177,5 +189,37 @@ public class ServerConnexion {
      */
     public void sendHTTPResponse(HTTPResponse response) throws IOException {
         this._socket.getOutputStream().write(response.getRawResponse().getBytes());
+    }
+
+    /**
+     * Perform Websocket handshake
+     * 
+     * @throws IllegalStateException if the connexion is already opened, or if the
+     *                               received datas isn't an HTTP response
+     * @throws IOException           if the input stream of the socket can't be
+     *                               accessed
+     */
+    @SuppressWarnings("unchecked")
+    public void performHandshake() throws HTTPException, IllegalStateException, IOException {
+        if (this._state != ConnexionState.CLOSED) {
+            throw new IllegalStateException("Connexion is used, can't perfom handshake");
+        }
+
+        WebSocketResponse<HTTPResponse> response = null;
+
+        try {
+            response = (WebSocketResponse<HTTPResponse>) this.getNextRequest(10);
+            if (response.type != WebSocketResponseType.HTTP_RESPONSE) {
+                // Weird, I don't even know how this would be possible
+                throw new Exception();
+            }
+        } catch (Exception ex) {
+            throw new IllegalStateException("Got a non-HTTP request while performing handshake");
+        }
+
+        InputStream reader = this._socket.getInputStream();
+
+        HTTPRequest request = new HTTPRequest(new InputStreamReader(reader), false, false);
+
     }
 }

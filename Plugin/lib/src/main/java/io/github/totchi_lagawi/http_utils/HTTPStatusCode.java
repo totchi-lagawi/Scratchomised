@@ -5,6 +5,8 @@ package io.github.totchi_lagawi.http_utils;
  */
 // From https://stackoverflow.com/a/66219005, thanks a lot
 public enum HTTPStatusCode {
+    // For compatibility with future HTTP versions
+    UNKNOWN(0, "Unknown"),
 
     // 1xx: Informational
     CONTINUE(100, "Continue"),
@@ -77,8 +79,8 @@ public enum HTTPStatusCode {
     NOT_EXTENDED(510, "Not Extended"),
     NETWORK_AUTHENTICATION_REQUIRED(511, "Network Authentication Required");
 
-    private final int value;
-    private final String description;
+    private int value;
+    private String description;
 
     HTTPStatusCode(int value, String description) {
         this.value = value;
@@ -103,6 +105,9 @@ public enum HTTPStatusCode {
             if (status.value == value)
                 return status;
         }
-        throw new IllegalArgumentException("Invalid status code: " + value);
+
+        HTTPStatusCode status = HTTPStatusCode.UNKNOWN;
+        status.value = value;
+        return status;
     }
 }

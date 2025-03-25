@@ -40,8 +40,9 @@ public class PluginServer extends Server {
 
     @Override
     protected void onError(ServerConnexion connexion, Exception exception) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'onError'");
+        System.err.println(
+                this._languageManager.getString("log_prefix") + exception.getMessage() + " ("
+                        + connexion.getRemoteAddress() + ")");
     }
 
 }

@@ -3,6 +3,7 @@ package io.github.totchi_lagawi.http_utils;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.SocketTimeoutException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -45,7 +46,7 @@ public class HTTPRequest {
      * @throws HTTPException if the given HTTP request if malformed
      */
     public HTTPRequest(InputStreamReader input, boolean acceptUnknownHTTPMethod, boolean acceptUnknownHTTPVersion)
-            throws IOException, HTTPException {
+            throws IOException, SocketTimeoutException, HTTPException {
         BufferedReader reader = new BufferedReader(input);
 
         String headerLine = reader.readLine();

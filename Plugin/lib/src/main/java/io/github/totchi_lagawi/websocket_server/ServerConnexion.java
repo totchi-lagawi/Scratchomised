@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
@@ -232,48 +233,41 @@ public class ServerConnexion {
      * @throws NoSuchAlgorithmException if the SHA-1 algorithm needed to perform a
      *                                  WebSocket handshake isn't available
      */
-    @SuppressWarnings("unchecked")
     public void performHandshake()
-            throws HTTPException, IllegalStateException, IOException, TimeoutException, NoSuchAlgorithmException {
+            throws HTTPException, IllegalStateException, IOException, TimeoutException, NoSuchAlgorithmException,
+            SocketTimeoutException {
         if (this._state != ConnexionState.CLOSED) {
             throw new IllegalStateException("Connexion is used, can't perfom handshake");
         }
 
-        WebSocketRequest<HTTPRequest> request = null;
+        // Prevent a client to hold a connection without doing anything
+        this._socket.setSoTimeout(10000);
 
-        try {
-            request = (WebSocketRequest<HTTPRequest>) this.getNextRequest(10);
-        } catch (ClassCastException ex) {
-            throw new IllegalStateException("Got a non-HTTP request while performing handshake");
-        }
+        HTTPRequest request = new HTTPRequest(new InputStreamReader(this._socket.getInputStream()), false, false);
 
-        this._checkHTTPHandhakeRequestValidity(request.data);
+        this._checkHTTPHandhakeRequestValidity(request);
 
         // If the WebSocket version used by the client isn't the same as the one used by
         // the server, it needs to tell the client which version to use
-        if (!request.data.getHeaders().get("Sec-WebSocket-Version").equals("13")) {
+        if (!request.getHeaders().get("Sec-WebSocket-Version").equals("13")) {
             HashMap<String, String> responseHeaders = new HashMap<>();
             responseHeaders.put("Sec-WebSocket-Version", "13");
-            HTTPResponse response = new HTTPResponse(request.data.getVersion(), 400, responseHeaders, null);
+            HTTPResponse response = new HTTPResponse(request.getVersion(), 400, responseHeaders, null);
             this.sendHTTPResponse(response);
 
             // Handle the second handshake request
-            try {
-                request = (WebSocketRequest<HTTPRequest>) this.getNextRequest(10);
-            } catch (ClassCastException ex) {
-                throw new IllegalStateException("Got a non-HTTP request while performing handshake");
-            }
-            this._checkHTTPHandhakeRequestValidity(request.data);
+            request = new HTTPRequest(new InputStreamReader(this._socket.getInputStream()), false, false);
+            this._checkHTTPHandhakeRequestValidity(request);
 
             // If the client refused to use the sent WebSocket version, fail handshake
-            if (!request.data.getHeaders().get("Sec-WebSocket-Version").equals("13")) {
+            if (!request.getHeaders().get("Sec-WebSocket-Version").equals("13")) {
                 throw new HTTPException(400, "The client refused to use WebSocket version 13");
             }
         }
 
         // Take note of the subprotocol, if specified
-        if (request.data.getHeaders().containsKey("Sec-WebSocket-Protocol")) {
-            this._subprotocol = Optional.of(request.data.getHeaders().get("Sec-WebSocket-Protocol"));
+        if (request.getHeaders().containsKey("Sec-WebSocket-Protocol")) {
+            this._subprotocol = Optional.of(request.getHeaders().get("Sec-WebSocket-Protocol"));
         }
 
         HashMap<String, String> responseHeaders = new HashMap<>();
@@ -281,13 +275,17 @@ public class ServerConnexion {
         responseHeaders.put("Upgrade", "websocket");
         responseHeaders.put("Sec-WebSocket-Accept", Base64.getEncoder().encodeToString(
                 MessageDigest.getInstance("SHA-1").digest(
-                        (request.data.getHeaders().get("Sec-WebSocket-Key") + "258EAFA5-E914-47DA-95CA-C5AB0DC85B11")
+                        (request.getHeaders().get("Sec-WebSocket-Key") + "258EAFA5-E914-47DA-95CA-C5AB0DC85B11")
                                 .getBytes())));
         if (this._subprotocol.isPresent()) {
             responseHeaders.put("Sec-WebSocket-Protocol", this._subprotocol.get());
         }
-        HTTPResponse response = new HTTPResponse(request.data.getVersion(), 101, responseHeaders, null);
+        HTTPResponse response = new HTTPResponse(request.getVersion(), 101, responseHeaders, null);
         this.sendHTTPResponse(response);
+
+        // Reset the socket timeout
+        this._socket.setSoTimeout(0);
+
         this._state = ConnexionState.OPEN;
     }
 

@@ -46,7 +46,12 @@ public class ConnexionHandler implements Runnable {
             }
             this._server.onError(_connexion, ex);
         } catch (Exception ex) {
-            ex.printStackTrace();
+            try {
+                this._connexion.close();
+            } catch (IOException ex2) {
+                ex.printStackTrace();
+            }
+            this._server.onError(_connexion, ex);
         }
     }
 

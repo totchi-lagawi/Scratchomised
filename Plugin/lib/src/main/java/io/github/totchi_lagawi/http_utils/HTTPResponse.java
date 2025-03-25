@@ -3,6 +3,7 @@ package io.github.totchi_lagawi.http_utils;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.SocketTimeoutException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -48,7 +49,7 @@ public class HTTPResponse {
      *                       400)
      */
     public HTTPResponse(InputStreamReader input, boolean acceptUnknownHTTPVersion, boolean acceptUnknownHTTPStatus)
-            throws IOException, HTTPException {
+            throws IOException, SocketTimeoutException, HTTPException {
         BufferedReader reader = new BufferedReader(input);
 
         String headerLine = reader.readLine();

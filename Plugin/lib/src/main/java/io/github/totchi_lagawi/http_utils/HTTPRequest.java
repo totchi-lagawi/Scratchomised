@@ -2,9 +2,7 @@ package io.github.totchi_lagawi.http_utils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -117,19 +115,21 @@ public class HTTPRequest {
             header = reader.readLine();
         }
 
-        // Got an empty line, switching to body
-        String bodyLine = reader.readLine();
-        StringBuilder body = new StringBuilder();
-        while (bodyLine != null) {
-            body.append(header);
-            bodyLine = reader.readLine();
-        }
+        // Body is hard to get
+
+        // // Got an empty line, switching to body
+        // String bodyLine = reader.readLine();
+        // StringBuilder body = new StringBuilder();
+        // while (bodyLine != null) {
+        // body.append(header);
+        // bodyLine = reader.readLine();
+        // }
 
         this._method = method;
         this._version = version;
         this._location = location;
         this._headers = headers;
-        this._body = body.toString();
+        this._body = "";
     }
 
     /**

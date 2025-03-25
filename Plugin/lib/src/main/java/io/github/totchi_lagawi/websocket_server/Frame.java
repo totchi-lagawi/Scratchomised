@@ -1,5 +1,7 @@
 package io.github.totchi_lagawi.websocket_server;
 
+import java.util.Optional;
+
 public class Frame {
     // Is the frame the latest of the message?
     private boolean _is_final;
@@ -13,7 +15,7 @@ public class Frame {
     private boolean _masked;
     // The masking key, empty if the frame isn't masked, or 4-byte (32 bits) long if
     // it is
-    private byte[] _masking_key;
+    private Optional<byte[]> _masking_key;
     // The actual payload
     // It can contain both extension data (determined by the extension) and
     // application data (what is normally used)
@@ -31,9 +33,8 @@ public class Frame {
      *                    masked
      * @param payload     the payload
      */
-    public Frame(boolean is_final, FrameOpcode opcode, boolean is_masked, byte[] masking_key,
+    public Frame(boolean is_final, FrameOpcode opcode, boolean is_masked, Optional<byte[]> masking_key,
             byte[] payload) {
-
     }
 
     /**
@@ -105,7 +106,7 @@ public class Frame {
      * @return bytes containing the masking key, or <code>null</code> if the frame
      *         is not masked
      */
-    public byte[] getMaskingKey() {
+    public Optional<byte[]> getMaskingKey() {
         return this._masking_key;
     }
 
@@ -115,7 +116,7 @@ public class Frame {
      * @param masking_key bytes containing the masking key
      */
     public void setMaskingKey(byte[] masking_key) {
-        this._masking_key = masking_key;
+        this._masking_key = Optional.of(masking_key);
     }
 
     /**

@@ -163,9 +163,6 @@ public class ServerConnexion {
         return new WebSocketRequest<HTTPRequest>(request);
     }
 
-    public void temp(Optional<String> lol) {
-    }
-
     /**
      * Close the connexion to the client
      */

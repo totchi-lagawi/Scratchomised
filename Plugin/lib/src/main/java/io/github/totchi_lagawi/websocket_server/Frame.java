@@ -35,6 +35,11 @@ public class Frame {
      */
     public Frame(boolean is_final, FrameOpcode opcode, boolean is_masked, Optional<byte[]> masking_key,
             byte[] payload) {
+        this._is_final = is_final;
+        this._opcode = opcode;
+        this._masked = is_masked;
+        this._masking_key = masking_key;
+        this._payload = payload;
     }
 
     /**

@@ -42,8 +42,7 @@ public class PluginActionManageServer extends PluginAction implements PropertyCh
         }
 
         if (this._server == null) {
-            this._server = new PluginServer(this._port, this._languageManager
-            );
+            this._server = new PluginServer(this._port, this._languageManager);
         }
 
         if (this._serverThread == null) {

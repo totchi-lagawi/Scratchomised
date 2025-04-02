@@ -1,14 +1,12 @@
 package io.github.totchi_lagawi.scratchomised_plugin;
 
-import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.util.log.Log;
-import org.eclipse.jetty.websocket.server.WebSocketHandler;
-import org.eclipse.jetty.websocket.servlet.WebSocketServletFactory;
+import io.javalin.Javalin;
 
 public class PluginServer implements Runnable {
     private LanguageManager _languageManager;
     private int _port;
-    private Server _server;
+    private Javalin _server;
 
     public PluginServer(int port, LanguageManager languageManager) {
         this._port = port;
@@ -17,42 +15,25 @@ public class PluginServer implements Runnable {
 
     @Override
     public void run() {
-        Log.setLog(new DummyLogger());
-        this._server = new Server(this._port);
+        // Shut up Jetty, unless you have something important to say
+        System.setProperty("org.eclipse.jetty.util.log.announce", "false");
+        System.setProperty("org.eclipse.jetty.LEVEL", "WARN");
+        Log.setLog(new PluginServerLogger(this._languageManager));
 
-        WebSocketHandler wsHandler = new WebSocketHandler() {
-            @Override
-            public void configure(WebSocketServletFactory factory) {
-                factory.register(PluginServerWebSocketHandler.class);
-            }
-        };
+        // Hello Javalin!
+        this._server = Javalin.create();
+        this._server.get("/", ctx -> ctx.result("Hello world!"));
 
-        this._server.setHandler(wsHandler);
-
-        Thread.currentThread().setContextClassLoader(PluginServer.class.getClassLoader());
-
-        try {
-            this._server.start();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-
-        try {
-            this._server.join();
-        } catch (InterruptedException ex) {
-            return;
-        }
+        // Needed due to a problem with the class loader
+        Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader());
+        this._server.start(this._port);
     }
 
     public void stop() {
-        try {
-            this._server.stop();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+        this._server.close();
     }
 
     public boolean isRunning() {
-        return this._server.isRunning();
+        return this._server.jettyServer().server().isRunning();
     }
 }

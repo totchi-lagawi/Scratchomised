@@ -35,9 +35,11 @@ public class Translation {
     /**
      * Get a translation from an identifier
      * 
-     * @param string the identifier of the translation to get
+     * @param id the identifier of the translation to get
      * @return the translation
      * @throws NoSuchElementException if the request translation was not found
+     * @throws IllegalAccessException if the plugin does not have the right to
+     *                                access itself (won't happen)
      */
     public String getTranslation(String id) throws NoSuchElementException, IllegalAccessException {
         try {

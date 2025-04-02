@@ -1,48 +1,58 @@
 package io.github.totchi_lagawi.scratchomised_plugin;
 
-import java.io.IOException;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.util.log.Log;
+import org.eclipse.jetty.websocket.server.WebSocketHandler;
+import org.eclipse.jetty.websocket.servlet.WebSocketServletFactory;
 
-import io.github.totchi_lagawi.websocket_server.Server;
-import io.github.totchi_lagawi.websocket_server.ServerConnexion;
-
-public class PluginServer extends Server {
+public class PluginServer implements Runnable {
     private LanguageManager _languageManager;
+    private int _port;
+    private Server _server;
 
-    public PluginServer(int port, LanguageManager languageManager) throws IOException {
-        super(port);
+    public PluginServer(int port, LanguageManager languageManager) {
+        this._port = port;
         this._languageManager = languageManager;
     }
 
     @Override
-    protected void onOpen(ServerConnexion connexion) {
-        System.out.println(
-                this._languageManager.getString("log_prefix") + "client connected : "
-                        + connexion.getRemoteAddress());
+    public void run() {
+        Log.setLog(new DummyLogger());
+        this._server = new Server(this._port);
+
+        WebSocketHandler wsHandler = new WebSocketHandler() {
+            @Override
+            public void configure(WebSocketServletFactory factory) {
+                factory.register(PluginServerWebSocketHandler.class);
+            }
+        };
+
+        this._server.setHandler(wsHandler);
+
+        Thread.currentThread().setContextClassLoader(PluginServer.class.getClassLoader());
+
+        try {
+            this._server.start();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        try {
+            this._server.join();
+        } catch (InterruptedException ex) {
+            return;
+        }
     }
 
-    @Override
-    protected void onMessage(ServerConnexion connexion, String message) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'onMessage'");
+    public void stop() {
+        try {
+            this._server.stop();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
-    @Override
-    protected void onMessage(ServerConnexion connexion, byte[] message) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'onMessage'");
+    public boolean isRunning() {
+        return this._server.isRunning();
     }
-
-    @Override
-    protected void onClose(ServerConnexion connexion) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'onClose'");
-    }
-
-    @Override
-    protected void onError(ServerConnexion connexion, Exception exception) {
-        System.err.println(
-                this._languageManager.getString("log_prefix") + exception.getMessage() + " ("
-                        + connexion.getRemoteAddress() + ")");
-    }
-
 }

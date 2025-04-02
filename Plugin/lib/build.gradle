@@ -9,6 +9,10 @@ repositories {
 
 dependencies {
     implementation 'org.yaml:snakeyaml:2.3'
+    //implementation "io.javalin:javalin:4.6.8"
+    implementation "org.eclipse.jetty:jetty-server:9.4.57.v20241219"
+    implementation "org.eclipse.jetty.websocket:websocket-server:9.4.57.v20241219"
+    implementation "org.eclipse.jetty:jetty-servlet:9.4.57.v20241219"
     // Shadow means it will be included at runtime, to prevent shadow to include it
     // And trust me you don't want that to happen
     // Look at the size of SweetHome3D's JAR
@@ -24,5 +28,7 @@ java {
 
 // Minimize the resulting JAR, a bit
 tasks.named('shadowJar', com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
-  minimize()
+  minimize {
+    exclude(dependency("org.eclipse.jetty.websocket:websocket-server:.*"))
+  }
 }

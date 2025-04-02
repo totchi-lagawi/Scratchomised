@@ -26,6 +26,7 @@ java {
 // Minimize the resulting JAR, a bit
 tasks.named('shadowJar', com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
   minimize {
+    // But we need to say that this should be included since it isn't imported directly
     exclude(dependency("org.eclipse.jetty.websocket:websocket-server:.*"))
   }
 }

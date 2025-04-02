@@ -1,7 +1,9 @@
 package io.github.totchi_lagawi.scratchomised_plugin;
 
 import org.eclipse.jetty.util.log.Log;
+
 import io.javalin.Javalin;
+import io.javalin.core.security.RouteRole;
 
 public class PluginServer implements Runnable {
     private LanguageManager _languageManager;
@@ -17,12 +19,16 @@ public class PluginServer implements Runnable {
     public void run() {
         // Shut up Jetty, unless you have something important to say
         System.setProperty("org.eclipse.jetty.util.log.announce", "false");
-        System.setProperty("org.eclipse.jetty.LEVEL", "WARN");
         Log.setLog(new PluginServerLogger(this._languageManager));
 
         // Hello Javalin!
         this._server = Javalin.create();
-        this._server.get("/", ctx -> ctx.result("Hello world!"));
+        WebSocketMessageHandler messageHandler = new WebSocketMessageHandler(this._languageManager);
+        this._server.ws("/", ws -> {
+            ws.onConnect(ctx -> System.out.println(this._languageManager.getString("log_prefix")
+                    + ctx.session.getRemoteAddress().toString() + " connected"));
+            ws.onMessage(messageHandler);
+        });
 
         // Needed due to a problem with the class loader
         Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader());

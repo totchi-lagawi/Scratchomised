@@ -9,9 +9,11 @@ repositories {
 
 dependencies {
     implementation 'org.yaml:snakeyaml:2.3'
-    implementation "io.javalin:javalin:4.6.8"
+    //implementation "io.javalin:javalin:4.6.8"
+    implementation "org.eclipse.jetty.websocket:websocket-server:9.4.57.v20241219"
     // Why is logging so complicated
     implementation "org.slf4j:slf4j-nop:2.1.0-alpha1"
+    implementation "com.fasterxml.jackson.jr:jackson-jr-objects:2.18.3"
     // Shadow means it will be included at runtime, to prevent shadow to include it
     // And trust me you don't want that to happen
     // Look at the size of SweetHome3D's JAR

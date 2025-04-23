@@ -1,45 +1,56 @@
 package io.github.totchi_lagawi.scratchomised_plugin;
 
-import org.eclipse.jetty.util.log.Log;
-
-import io.javalin.Javalin;
-import io.javalin.core.security.RouteRole;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.servlet.ServletHolder;
 
 public class PluginServer implements Runnable {
     private LanguageManager _languageManager;
     private int _port;
-    private Javalin _server;
+    private Server _server;
 
     public PluginServer(int port, LanguageManager languageManager) {
         this._port = port;
         this._languageManager = languageManager;
+        this._server = new Server(this._port);
     }
 
     @Override
     public void run() {
-        // Shut up Jetty, unless you have something important to say
-        System.setProperty("org.eclipse.jetty.util.log.announce", "false");
-        Log.setLog(new PluginServerLogger(this._languageManager));
-
-        // Hello Javalin!
-        this._server = Javalin.create();
-        WebSocketMessageHandler messageHandler = new WebSocketMessageHandler(this._languageManager);
-        this._server.ws("/", ws -> {
-            ws.onConnect(ctx -> System.out.println(this._languageManager.getString("log_prefix")
-                    + ctx.session.getRemoteAddress().toString() + " connected"));
-            ws.onMessage(messageHandler);
-        });
-
-        // Needed due to a problem with the class loader
         Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader());
-        this._server.start(this._port);
+        ServletContextHandler contextHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
+        contextHandler.setContextPath("/");
+        this._server.setHandler(contextHandler);
+        ServletHolder servletHolder = new ServletHolder(new PluginServerWebSocketServlet(this._languageManager));
+        contextHandler.addServlet(servletHolder, "/");
+        try {
+            this._server.start();
+        } catch (Exception ex) {
+            System.err.println(this._languageManager.getString("log_prefix") + "Couldn't start the server :");
+            ex.printStackTrace();
+        }
     }
 
     public void stop() {
-        this._server.close();
+        if (this.isRunning()) {
+            try {
+                this._server.stop();
+            } catch (Exception ex) {
+                System.err.println(this._languageManager.getString("log_prefix") + "Couldn't stop the server :");
+                ex.printStackTrace();
+            }
+        }
     }
 
     public boolean isRunning() {
-        return this._server.jettyServer().server().isRunning();
+        return this._server.isRunning();
+    }
+
+    public int getPort() {
+        return this._port;
+    }
+
+    public void setPort(int port) {
+        this._port = port;
     }
 }

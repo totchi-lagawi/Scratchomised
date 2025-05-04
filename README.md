@@ -3,9 +3,9 @@ Scratch extension to interact with Sweet Home 3D
 
 > [!WARNING]
 > This extension is a work in progress, and is currently ***unusable***. Here is the list of the features remaining to do, to only quote a few :
-> * WebSocket server
-> * Better client/server communication
-> * Other blocks
+> * Server implementation of the communication protocol
+> * More blocks in the client
+> * Export options in SweetHome3D
 
 # Usage
 

@@ -205,7 +205,7 @@ class Scratchomised {
         }
 
         switch (message.action) {
-            case "set_objects": {
+            case "update_objects": {
                 if (!message.args.objects) {
                     console.error(this._prefix + "missing argument for action set_objects : objects");
                 }

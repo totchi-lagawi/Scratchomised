@@ -213,7 +213,7 @@ class Scratchomised {
                 break
             }
             default: {
-                console.log(this._prefix + "unknow action : " + message.action)
+                console.log(this._prefix + "unknown action : " + message.action)
             }
         }
     }

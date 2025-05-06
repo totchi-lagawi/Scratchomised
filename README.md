@@ -2,8 +2,8 @@
 Scratch extension to interact with Sweet Home 3D
 
 > [!WARNING]
-> This extension is a work in progress, and is currently ***unusable***. Here is the list of the features remaining to do, to only quote a few :
-> * Server implementation of the communication protocol
+> This extension is a work in progress, and is currently barely usable. Here is the list of the features remaining to do :
+> * Add a password protection on the server
 > * More blocks in the client
 > * Export options in SweetHome3D
 

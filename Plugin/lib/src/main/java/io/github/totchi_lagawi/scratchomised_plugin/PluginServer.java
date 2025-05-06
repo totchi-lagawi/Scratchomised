@@ -4,14 +4,18 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 
+import com.eteks.sweethome3d.model.Home;
+
 public class PluginServer implements Runnable {
     private LanguageManager _languageManager;
+    private Home _home;
     private int _port;
     private Server _server;
 
-    public PluginServer(int port, LanguageManager languageManager) {
-        this._port = port;
+    public PluginServer(int port, LanguageManager languageManager, Home home) {
         this._languageManager = languageManager;
+        this._home = home;
+        this._port = port;
         this._server = new Server(this._port);
     }
 
@@ -21,7 +25,8 @@ public class PluginServer implements Runnable {
         ServletContextHandler contextHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
         contextHandler.setContextPath("/");
         this._server.setHandler(contextHandler);
-        ServletHolder servletHolder = new ServletHolder(new PluginServerWebSocketServlet(this._languageManager));
+        ServletHolder servletHolder = new ServletHolder(
+                new PluginServerWebSocketServlet(this._languageManager, this._home));
         contextHandler.addServlet(servletHolder, "/");
         try {
             this._server.start();

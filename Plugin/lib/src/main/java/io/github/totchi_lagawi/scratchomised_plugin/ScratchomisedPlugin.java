@@ -12,7 +12,8 @@ public class ScratchomisedPlugin extends Plugin {
     public PluginAction[] getActions() {
         UserPreferences userPreferences = getUserPreferences();
         this._languageManager = new LanguageManager(userPreferences.getLanguage());
-        PluginActionManageServer pluginActionManageServer = new PluginActionManageServer(this._languageManager);
+        PluginActionManageServer pluginActionManageServer = new PluginActionManageServer(this._languageManager,
+                this.getHome());
         PluginActionExportDatas pluginActionExportDatas = new PluginActionExportDatas(this._languageManager);
         userPreferences.addPropertyChangeListener(Property.LANGUAGE, this._languageManager);
         userPreferences.addPropertyChangeListener(Property.LANGUAGE, pluginActionManageServer);

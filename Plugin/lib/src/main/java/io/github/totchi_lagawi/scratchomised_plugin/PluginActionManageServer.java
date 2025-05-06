@@ -6,16 +6,19 @@ import java.lang.Thread.UncaughtExceptionHandler;
 
 import javax.swing.JOptionPane;
 
+import com.eteks.sweethome3d.model.Home;
 import com.eteks.sweethome3d.plugin.PluginAction;
 
 public class PluginActionManageServer extends PluginAction implements PropertyChangeListener, UncaughtExceptionHandler {
     private LanguageManager _languageManager;
+    private Home _home;
     private int _port = 55125;
     private PluginServer _server;
     private Thread _serverThread;
 
-    public PluginActionManageServer(LanguageManager languageManager) {
+    public PluginActionManageServer(LanguageManager languageManager, Home home) {
         this._languageManager = languageManager;
+        this._home = home;
         // When instanciated, define the menu, name and enabled state of this action
         putPropertyValue(Property.NAME, this._languageManager.getString("menus.server.start"));
         putPropertyValue(Property.MENU, this._languageManager.getString("name"));
@@ -42,7 +45,7 @@ public class PluginActionManageServer extends PluginAction implements PropertyCh
         }
 
         if (this._server == null) {
-            this._server = new PluginServer(this._port, this._languageManager);
+            this._server = new PluginServer(this._port, this._languageManager, this._home);
         }
 
         if (this._serverThread == null) {

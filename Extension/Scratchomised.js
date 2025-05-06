@@ -140,31 +140,51 @@ class Scratchomised {
     }
 
     getObjects() {
-        var keys = Object.keys(this._objects);
-        if (keys.length == 0) {
-            return ["(Empty)"]
-        } else {
-            return keys
+        if (Object.keys(this._objects).length == 0) {
+            return ["[No objects]"]
         }
+
+        let objects = []
+
+        let ids = Object.keys(this._objects);
+        for (let i = 0; i < ids.length; i++) {
+            objects.push({
+                text: this._objects[ids[i]].name,
+                value: ids[i]
+            })
+        }
+
+        if (objects.length == 0) {
+            console.warn(this._prefix + "looks like some objects are stored but their names can't be retrieved")
+            return ["[No objects"]
+        }
+
+        return objects;
     }
 
     getProperties() {
-        var final_properties = []
-        const array = Object.values(this._objects);
-        for (var index = 0; index < array.length; index++) {
-            const properties = Object.keys(array[index]);
-            for (var index2 = 0; index2 < properties.length; index2++) {
-                console.debug(this._prefix + "trying to add property : " + properties[index2]);
-                if (!final_properties.includes(properties[index2])) {
-                    final_properties.push(properties[index2])
+        if (Object.keys(this._objects).length == 0) {
+            return ["[No properties]"]
+        }
+
+        let properties = []
+
+        let ids = Object.keys(this._objects);
+        for (let i = 0; i < ids.length; i++) {
+            let current_properties = Object.keys(this._objects[ids[i]]);
+            for (let u = 0; u < current_properties.length; u++) {
+                if (!properties.includes(current_properties[u])) {
+                    properties.push(current_properties[u])
                 }
             }
         }
-        if (final_properties.length == 0) {
-            return ["(Empty)"]
-        } else {
-            return final_properties
+
+        if (properties.length == 0) {
+            console.warn(this._prefix + "looks like some objects are stored but they have no properties")
+            return ["[No properties]"]
         }
+
+        return properties;
     }
 
     connectToHost(args) {
@@ -189,9 +209,6 @@ class Scratchomised {
     // Reconnect the socket (in case it failed to connect, or the server disconnected)
     _reconnectSocket() {
         this.socket = new WebSocket(this.protocol + "://" + this.host + ":" + this.port, "scratchomised");
-        this.socket.addEventListener("open", function () {
-            this._send("get_objects")
-        }.bind(this));
         this.socket.addEventListener("message", this._handleIncomingData.bind(this));
     }
 
@@ -207,9 +224,12 @@ class Scratchomised {
         switch (message.action) {
             case "update_objects": {
                 if (!message.args.objects) {
-                    console.error(this._prefix + "missing argument for action set_objects : objects");
+                    console.error(this._prefix + "missing argument for action update_objects : objects");
                 }
-                this._objects = message.args.objects
+                this._objects = {}
+                for (let i = 0; i < message.args.objects.length; i++) {
+                    this._objects[message.args.objects[i]["id"]] = message.args.objects[i]
+                }
                 break
             }
             default: {

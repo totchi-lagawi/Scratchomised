@@ -3,7 +3,7 @@
 class Scratchomised {
     constructor() {
         this.port = 55125;
-        this.host = "localhost"
+        this.server = "localhost"
         this.protocol = "ws"
         this._reconnectSocket();
         this._objects = {}
@@ -70,11 +70,16 @@ class Scratchomised {
                     }
                 },
                 {
-                    opcode: "connectToHost",
+                    opcode: "isConnectedToServer",
+                    blockType: "boolean",
+                    text: "Is connected to server?"
+                },
+                {
+                    opcode: "connectToServer",
                     blockType: "command",
-                    text: "Connect to host [HOST] with port [PORT] using protocol [PROTOCOL]",
+                    text: "Connect to server [SERVER] with port [PORT] using protocol [PROTOCOL]",
                     arguments: {
-                        HOST: {
+                        SERVER: {
                             type: "string"
                         },
                         PORT: {
@@ -187,8 +192,16 @@ class Scratchomised {
         return properties;
     }
 
-    connectToHost(args) {
-        this.host = args.HOST
+    isConnectedToServer(args) {
+        if (this.socket.readyState == this.socket.OPEN) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    connectToServer(args) {
+        this.server = args.SERVER
         this.port = args.PORT
         this.protocol = args.PROTOCOL
         this._reconnectSocket();
@@ -208,7 +221,7 @@ class Scratchomised {
 
     // Reconnect the socket (in case it failed to connect, or the server disconnected)
     _reconnectSocket() {
-        this.socket = new WebSocket(this.protocol + "://" + this.host + ":" + this.port, "scratchomised");
+        this.socket = new WebSocket(this.protocol + "://" + this.server + ":" + this.port, "scratchomised");
         this.socket.addEventListener("message", this._handleIncomingData.bind(this));
     }
 

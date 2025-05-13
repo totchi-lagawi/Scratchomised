@@ -16,6 +16,7 @@ public class PluginServerWebSocketServlet extends WebSocketServlet {
 
     @Override
     public void configure(WebSocketServletFactory factory) {
+        factory.getPolicy().setIdleTimeout(Long.MAX_VALUE);
         factory.register(PluginServerWebSocketEndpoint.class);
         factory.setCreator(new PluginServerWebSocketCreator(this._languageManager, this._home));
     }

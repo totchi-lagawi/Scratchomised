@@ -1,7 +1,8 @@
 
 // Class representing the extension
 class Scratchomised {
-    constructor() {
+    constructor(runtime) {
+        this.runtime = runtime;
         this.port = 55125;
         this.server = "localhost"
         this.protocol = "ws"
@@ -22,6 +23,24 @@ class Scratchomised {
 
             // Blocks shown in Sratch
             blocks: [
+                {
+                    opcode: "whenPropertyIs",
+                    blockType: "hat",
+                    text: "When property [PROPERTY] of [OBJECT] is [VALUE]",
+                    arguments: {
+                        PROPERTY: {
+                            type: "string",
+                            menu: "properties"
+                        },
+                        OBJECT: {
+                            type: "string",
+                            menu: "objects"
+                        },
+                        VALUE: {
+                            type: "string"
+                        }
+                    }
+                },
                 {
                     // The opcode is the name of the function called when the block is used
                     opcode: "defineProperty",
@@ -75,6 +94,26 @@ class Scratchomised {
                     text: "Is connected to server?"
                 },
                 {
+                    opcode: "getServerAddress",
+                    blockType: "reporter",
+                    text: "Server address"
+                },
+                {
+                    opcode: "getServerPort",
+                    blockType: "reporter",
+                    text: "Server port"
+                },
+                {
+                    opcode: "getServerProtocol",
+                    blockType: "reporter",
+                    text: "Server protocol"
+                },
+                {
+                    opcode: "reconnectToServer",
+                    blockType: "command",
+                    text: "Reconnect to the current server"
+                },
+                {
                     opcode: "connectToServer",
                     blockType: "command",
                     text: "Connect to server [SERVER] with port [PORT] using protocol [PROTOCOL]",
@@ -125,6 +164,11 @@ class Scratchomised {
                 }
             }
         }
+    }
+
+    // TODO
+    whenPropertyIs(args) {
+        return false;
     }
 
     defineProperty(args) {
@@ -198,6 +242,22 @@ class Scratchomised {
         } else {
             return false;
         }
+    }
+
+    getServerAddress(args) {
+        return this.server;
+    }
+
+    getServerPort(args) {
+        return this.port;
+    }
+
+    getServerProtocol(args) {
+        return this.protocol;
+    }
+
+    reconnectToServer(args) {
+        this._reconnectSocket();
     }
 
     connectToServer(args) {

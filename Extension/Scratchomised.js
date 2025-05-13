@@ -12,7 +12,7 @@ class Scratchomised {
         this._prefix = "[Scratchomised] - "
     }
 
-    //Give informations to Scratch about the extension
+    // Give informations to Scratch about the extension
     getInfo() {
         return {
             // Identifier of the extension (unique)

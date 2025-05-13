@@ -1,8 +1,7 @@
 
 // Class representing the extension
 class Scratchomised {
-    constructor(runtime) {
-        this.runtime = runtime;
+    constructor() {
         this.port = 55125;
         this.server = "localhost"
         this.protocol = "ws"
@@ -169,7 +168,13 @@ class Scratchomised {
 
     // TODO
     whenPropertyIs(args) {
-        return false;
+        try {
+            if (this._objects[args.OBJECT][args.PROPERTY] == args.VALUE) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch {}
     }
 
     defineProperty(args) {

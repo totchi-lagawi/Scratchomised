@@ -110,6 +110,7 @@ class Scratchomised {
                 },
                 {
                     opcode: "reconnectToServer",
+                    func: "_reconnectSocket",
                     blockType: "command",
                     text: "Reconnect to the current server"
                 },
@@ -254,10 +255,6 @@ class Scratchomised {
 
     getServerProtocol(args) {
         return this.protocol;
-    }
-
-    reconnectToServer(args) {
-        this._reconnectSocket();
     }
 
     connectToServer(args) {

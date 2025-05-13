@@ -71,7 +71,7 @@ class Scratchomised {
                 },
                 {
                     opcode: "isConnectedToServer",
-                    blockType: "boolean",
+                    blockType: "Boolean",
                     text: "Is connected to server?"
                 },
                 {

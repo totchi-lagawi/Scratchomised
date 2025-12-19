@@ -61,7 +61,7 @@ They should be posted to [the issue tab](https://github.com/totchi-lagawi/Scratc
 ## Scratch Plugin
 As JavaScript is an interpreted language, it takes source file and interprets them instead of running a compiled version of the program. This means that all you have to do is to take the JavaScript file and give it to Scratch as it. You can minify it if you want, though. With Bun, you can run :
 ```bash
-bun build --minify --outfile=Scratchomised.min.js Scratchomised.js
+bun build --production --outfile=Scratchomised.min.js Scratchomised.js
 ```
 in the `Extension` directory.
 ## SweetHome3D Plugin

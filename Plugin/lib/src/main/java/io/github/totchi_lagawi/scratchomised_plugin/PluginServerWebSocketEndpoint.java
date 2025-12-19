@@ -6,6 +6,7 @@ import com.eteks.sweethome3d.model.Home;
 import com.eteks.sweethome3d.model.HomePieceOfFurniture;
 import com.eteks.sweethome3d.model.CollectionEvent.Type;
 import com.fasterxml.jackson.jr.ob.JSON;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -13,7 +14,10 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Map;
 
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.WebSocketListener;
@@ -35,6 +39,9 @@ public class PluginServerWebSocketEndpoint
         System.out.println(this._languageManager.getString("log_prefix") + this._session.getRemoteAddress()
                 + " disconnected (reason : "
                 + reason + ")");
+        for (HomePieceOfFurniture furniture : this._home.getFurniture()) {
+            furniture.removePropertyChangeListener(this);
+        }
     }
 
     @Override
@@ -153,9 +160,25 @@ public class PluginServerWebSocketEndpoint
         this.updateObjects();
     }
 
+    @SuppressWarnings("unchecked")
     private void updateObjects() {
         Hashtable<String, Object> requestArguments = new Hashtable<>();
-        requestArguments.put("objects", this._home.getFurniture());
+        requestArguments.put("objects", new ArrayList<Map<String, Object>>());
+        ObjectMapper mapper = new ObjectMapper();
+        for (HomePieceOfFurniture furniture : this._home.getFurniture()) {
+            HashMap<String, Object> mappedObject = mapper.convertValue(furniture, HashMap.class);
+            ArrayList<String> classes = new ArrayList<String>();
+            Class<?> current_class = furniture.getClass();
+            while (true) {
+                if (current_class == Object.class) {
+                    break;
+                }
+                classes.add(current_class.getCanonicalName());
+                current_class = current_class.getSuperclass();
+            }
+            mappedObject.put("__scratchomisedClasses", classes);
+            ((ArrayList<Map<String, Object>>)requestArguments.get("objects")).add(mappedObject);
+        }
         ScratchomisedRequest updateObjectRequest = new ScratchomisedRequest("update_objects", requestArguments);
         try {
             String sent = this._json.asString(updateObjectRequest);

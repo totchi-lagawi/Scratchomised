@@ -14,6 +14,7 @@ dependencies {
     // Why is logging so complicated
     implementation "org.slf4j:slf4j-nop:2.1.0-alpha1"
     implementation "com.fasterxml.jackson.jr:jackson-jr-objects:2.18.3"
+    implementation "com.fasterxml.jackson.core:jackson-databind:2.18.3"
     // Shadow means it will be included at runtime, to prevent shadow to include it
     // And trust me you don't want that to happen
     // Look at the size of SweetHome3D's JAR
@@ -30,7 +31,7 @@ java {
 // Minimize the resulting JAR, a bit
 tasks.named('shadowJar', com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
   minimize {
-    // But we need to say that this should be included since it isn't imported directly
+    // But we need to say that this should be excluded since it isn't imported directly
     exclude(dependency("org.eclipse.jetty.websocket:websocket-server:.*"))
     exclude(dependency("org.slf4j:slf4j-nop:.*"))
   }

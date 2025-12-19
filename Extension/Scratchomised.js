@@ -1,3 +1,4 @@
+// TODO : add functions for the protocol, plus a function to filter objects
 
 // Class representing the extension
 class Scratchomised {
@@ -7,7 +8,6 @@ class Scratchomised {
         this.protocol = "ws"
         this._reconnectSocket();
         this._objects = {}
-
         this._prefix = "[Scratchomised] - "
     }
 
@@ -22,6 +22,18 @@ class Scratchomised {
 
             // Blocks shown in Sratch
             blocks: [
+                {
+                    opcode: "objectsLightsTurnOn",
+                    blockType: "command",
+                    text: "Turn on [POWERABLE_LIGHT]",
+                    arguments: {
+                        POWERABLE_LIGHT: {
+                            type: "string",
+                            menu: "objectsPowerableLights"
+                        }
+                    }
+                },
+                // -- GENERAL --
                 {
                     opcode: "whenPropertyIs",
                     blockType: "hat",
@@ -87,6 +99,7 @@ class Scratchomised {
                         }
                     }
                 },
+                // -- SERVER --
                 {
                     opcode: "isConnectedToServer",
                     blockType: "Boolean",
@@ -151,6 +164,9 @@ class Scratchomised {
                     // Due to a strange behaviour of the TurboWarp VM, dynamic menus only works
                     // in unsandboxed extensions
                     items: "getObjects"
+                },
+                objectsPowerableLights: {
+                    items: "getObjectsPowerableLights"
                 },
                 connection_protocols: {
                     items: [{
@@ -217,6 +233,14 @@ class Scratchomised {
         return objects;
     }
 
+    getObjectsPowerableLights() {
+        let lights = this._sortObjects("com.eteks.sweethome3d.model.HomeLight")
+        if (lights.length == 0) {
+            return ["[No lights]"]
+        }
+        return lights
+    }
+
     getProperties() {
         if (Object.keys(this._objects).length == 0) {
             return ["[No properties]"]
@@ -240,6 +264,14 @@ class Scratchomised {
         }
 
         return properties;
+    }
+
+    objectsLightsTurnOn(args) {
+        this.defineProperty({
+            OBJECT: args.POWERABLE_LIGHT,
+            PROPERTY: "power",
+            VALUE: "1"
+        })
     }
 
     isConnectedToServer(args) {
@@ -269,6 +301,27 @@ class Scratchomised {
         this._reconnectSocket();
     }
 
+    _sortObjects(className) {
+        let objects = [];
+        
+        let ids = Object.keys(this._objects);
+        for (let i = 0; i < ids.length; i++) {
+            if (this._objects[ids[i]]["__scratchomisedClasses"].includes(className)) {
+                objects.push({
+                    text: this._objects[ids[i]].name,
+                    value: ids[i]
+                })
+            }
+        }
+
+        if (objects.length == 0) {
+            console.warn(this._prefix + "looks like some objects are stored but their names can't be retrieved")
+            return ["[No objects"]
+        }
+
+        return objects;
+    }
+
     // Function to send data to the server
     _send(action, args = {}) {
         try {
@@ -296,6 +349,7 @@ class Scratchomised {
             return
         }
 
+
         switch (message.action) {
             case "update_objects": {
                 if (!message.args.objects) {
@@ -308,7 +362,7 @@ class Scratchomised {
                 break
             }
             default: {
-                console.log(this._prefix + "unknown action : " + message.action)
+                console.warn(this._prefix + "unknown action : " + message.action)
             }
         }
     }

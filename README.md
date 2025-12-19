@@ -59,7 +59,11 @@ They should be posted to [the issue tab](https://github.com/totchi-lagawi/Scratc
 
 # Compiling
 ## Scratch Plugin
-As JavaScript is an interpreted language, it takes source file and interprets them instead of running a compiled version of the program. This means that all you have to do is to take the JavaScript file and give it to Scratch as it. You can minify it if you want, though.
+As JavaScript is an interpreted language, it takes source file and interprets them instead of running a compiled version of the program. This means that all you have to do is to take the JavaScript file and give it to Scratch as it. You can minify it if you want, though. With Bun, you can run :
+```bash
+bun build --minify --outfile=Scratchomised.min.js Scratchomised.js
+```
+in the `Extension` directory.
 ## SweetHome3D Plugin
 SweetHome3D plugins are written in Java, and so is this plugin. This means that you must install a JDK (not a JRE, which just runs Java programs), at minimum a Java 8 compiler, and a Java 17 runtime, because Gradle cannot run with an older runtime. You can use Java JDK 17, which also brings a runtime, to make things easier. Here a the instructions for some platforms. If yours is not listed, open an issue if no one is already opened, and either wait for me to answer or search by yourself (and tell me what you found).
 ### Installing a JDK
